@@ -175,3 +175,10 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .line-rise, .pill-pop, .line-fade { transform: none !important; opacity: 1 !important; transition: none !important; }
 }
+
+/* word swap for gradient (.accent) text — no filter, which breaks background-clip:text */
+@keyframes word-rise { from { clip-path: inset(0 0 100% 0); margin-top: .35em; margin-bottom: -.35em; } to { clip-path: inset(0 0 -20% 0); margin-top: 0; margin-bottom: 0; } }
+.word-rise { display: inline-block; animation: word-rise .55s cubic-bezier(.2,.8,.2,1) both; }
+@media (prefers-reduced-motion: reduce) { .word-rise { animation: none; } }
+/* solid serif accent for animated swaps (gradient text doesn't paint inside animated layers) */
+.accent-solid { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--color-lime); text-shadow: 0 0 28px rgba(198, 244, 50, .35); padding-right: .08em; }

@@ -16,9 +16,11 @@ import useSpotlight from './fx/useSpotlight'
 import Hero from './Hero'
 import Certificates from './Certificates'
 import { CreativeIntro, CreativeReel } from './Creative'
+import AIShowcase from './AIShowcase'
 
 const NAV = [
   { id: 'services', label: 'Services' },
+  { id: 'ai', label: 'AI' },
   { id: 'about', label: 'About' },
   { id: 'stack', label: 'Skills' },
   { id: 'experience', label: 'Experience' },
@@ -124,7 +126,7 @@ function Navbar() {
           <Logo />
           <span className="hidden font-display font-semibold text-white sm:inline">Jethro M.</span>
         </a>
-        <ul className="hidden items-center gap-1 lg:flex">
+        <ul className="hidden items-center gap-0.5 xl:flex">
           {NAV.map((n) => (
             <li key={n.id}>
               <a href={`#${n.id}`} className="rounded-lg px-3 py-2 text-sm text-muted transition hover:text-mint">{n.label}</a>
@@ -135,13 +137,13 @@ function Navbar() {
           <a href="#contact" className="hidden items-center gap-1.5 rounded-full bg-aqua px-4 py-2 text-sm font-medium text-deep transition hover:bg-mint sm:inline-flex">
             Hire me <ArrowRight size={15} />
           </a>
-          <button onClick={() => setOpen(!open)} className="grid h-10 w-10 place-items-center rounded-lg text-mint lg:hidden" aria-label="Toggle menu" aria-expanded={open}>
+          <button onClick={() => setOpen(!open)} className="grid h-10 w-10 place-items-center rounded-lg text-mint xl:hidden" aria-label="Toggle menu" aria-expanded={open}>
             {open ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </nav>
       {open && (
-        <ul className="glass mx-3 mt-2 flex flex-col p-2 lg:hidden">
+        <ul className="glass mx-3 mt-2 flex flex-col p-2 xl:hidden">
           {[...NAV, { id: 'contact', label: 'Hire me' }].map((n) => (
             <li key={n.id}>
               <a href={`#${n.id}`} onClick={() => setOpen(false)} className="block rounded-lg px-4 py-3 text-muted hover:bg-aqua/10 hover:text-mint">{n.label}</a>
@@ -533,7 +535,7 @@ function BuildBand() {
       <h2 className="relative flex flex-wrap items-center justify-center gap-x-5 gap-y-4 px-4 font-display text-4xl font-bold tracking-tight text-white sm:text-6xl md:text-7xl">
         I build
         <span className="aurora-ring inline-grid min-w-[7ch] place-items-center rounded-full bg-space/85 px-8 py-3 shadow-[0_0_80px_-10px] shadow-emerald/50 backdrop-blur sm:px-10 sm:py-4">
-          <span key={i} className="word-in accent whitespace-nowrap">{pitch.buildWords[i]}</span>
+          <span key={i} className="word-rise whitespace-nowrap"><span className="accent-solid">{pitch.buildWords[i]}</span></span>
         </span>
       </h2>
     </section>
@@ -639,6 +641,7 @@ export default function App() {
       <main className="relative z-10">
         <Hero />
         <Services />
+        <AIShowcase />
         <About />
         <Qualifications />
         <Stack />
