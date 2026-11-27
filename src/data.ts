@@ -12,8 +12,58 @@ export const profile = {
   email: 'your.email@example.com',
   github: 'https://github.com/Jetsyyy',
   linkedin: 'https://www.linkedin.com/in/your-profile',
-  resume: '#', // e.g. '/resume.pdf' after adding it to /public
+  resume: 'https://drive.google.com/file/d/18i_QD-arFGC7lMZagb80krc0bJ9RE3Ya/view',
 }
+
+// Video demos hosted in Google Drive ("Portolio Websites" folder, shared as anyone-with-link).
+// `driveId` is the file id from the Drive share link.
+export type Demo = {
+  driveId: string
+  title: string
+  kind: string
+  platform: 'Web' | 'Mobile'
+  stack: string
+  role: string
+  description: string
+  highlights: string[]
+  portrait?: boolean
+}
+
+export const demos: Demo[] = [
+  {
+    driveId: '1cycaufQV_DLGk7mAX20n3Yo7EbxQVnPJ',
+    title: 'Genrev Systems',
+    kind: 'Web-based management system',
+    platform: 'Web',
+    stack: 'Laravel',
+    role: 'Developer',
+    // TODO: confirm details for Genrev Systems
+    description: 'A full web system with secure account login and role-based access, shown end to end in a recorded walkthrough.',
+    highlights: ['Account login & registration', 'Role-based access', 'Responsive dashboard UI'],
+  },
+  {
+    driveId: '1D-MwmxlJNNfi27Bv9yr7e_NNn0A979mC',
+    title: 'Sandalivid',
+    kind: 'Pixel-art study session app',
+    platform: 'Web',
+    stack: 'JavaScript',
+    role: 'Developer',
+    // TODO: confirm details for Sandalivid
+    description: 'A cozy pixel-art study room where you set a task, pick a theme and run a focused study-session timer.',
+    highlights: ['Focus session timer', 'Custom themes & colours', 'Hand-crafted pixel-art scene'],
+  },
+  {
+    driveId: '1xKL33D-CDo3dH3Ioa4gb_cht2VFvotCh',
+    title: 'Succor Haven',
+    kind: 'AI tutoring mobile app',
+    platform: 'Mobile',
+    stack: 'Flutter',
+    role: 'Developer',
+    description: 'A mobile tutoring companion with separate student, teacher and admin sign-in, bilingual UI and AI-guided study help.',
+    highlights: ['Student / Teacher / Admin roles', 'Email & phone OTP sign-in', 'English / 中文 interface'],
+    portrait: true,
+  },
+]
 
 // The sales pitch: what clients can hire you for.
 export const pitch = {

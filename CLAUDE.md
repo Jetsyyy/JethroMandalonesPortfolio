@@ -8,7 +8,7 @@ React + Vite + TypeScript + Tailwind v4. Content: `src/data.ts`. Brand tokens: `
 - **Never use purple** or the typical purple-gradient dev-portfolio look.
 
 ## Section order
-Hero (sales pitch) → Services ("What I do") → About → Qualifications & Education → Technical Skills → Professional Experience → Featured Projects (tabbed showcase) → Leadership & Achievements → "I build ___" band → Contact ("Have something to build?" + Let's talk)
+Hero (sales pitch) → Services ("What I do") → About → Qualifications & Education → Technical Skills → Professional Experience → Demos (swipeable flip-card deck of Drive videos, `src/DemoDeck.tsx`, data in `demos`) → Featured Projects (tabbed showcase) → Leadership & Achievements → "I build ___" band → Contact ("Have something to build?" + Let's talk)
 
 The site is positioned as **selling Jethro's skills** to clients/employers, not just a résumé. Layout was inspired by a reference reel, but keep the copy and visuals original and teal.
 

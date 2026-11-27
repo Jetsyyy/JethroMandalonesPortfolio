@@ -8,12 +8,14 @@ import {
   about, education, experience, leadership, leadershipSummary, pitch, profile,
   projects, qualifications, services, techStack, type Project,
 } from './data'
+import DemoDeck from './DemoDeck'
 
 const NAV = [
   { id: 'services', label: 'Services' },
   { id: 'about', label: 'About' },
   { id: 'stack', label: 'Skills' },
   { id: 'experience', label: 'Experience' },
+  { id: 'demos', label: 'Demos' },
   { id: 'projects', label: 'Work' },
   { id: 'leadership', label: 'Leadership' },
 ]
@@ -357,6 +359,28 @@ function Experience() {
   )
 }
 
+/* ───────────── Demos: proof of work, swipeable flip cards ───────────── */
+function Demos() {
+  return (
+    <section id="demos" className="relative overflow-hidden py-20 md:py-28">
+      <div className="reveal mx-auto mb-6 flex max-w-6xl flex-wrap items-end justify-between gap-6 px-4 sm:px-6">
+        <div className="max-w-xl">
+          <p className="eyebrow mb-3">Proof of work</p>
+          <h2 className="font-display text-3xl font-semibold tracking-tight text-white sm:text-5xl">
+            Don't take my word for it. <span className="text-aqua">Watch it run.</span>
+          </h2>
+        </div>
+        <p className="max-w-xs font-mono text-xs leading-relaxed text-muted">
+          Swipe or use ← → to browse. Tap the front card to flip it, or hit play to watch the recorded demo.
+        </p>
+      </div>
+      <div className="reveal">
+        <DemoDeck />
+      </div>
+    </section>
+  )
+}
+
 /* ───────────── Work: tabbed showcase in a browser frame ───────────── */
 function ProjectMock({ kind }: { kind: Project['mock'] }) {
   if (kind === 'analytics') {
@@ -590,6 +614,7 @@ function Contact() {
           <a href={profile.github} target="_blank" rel="noreferrer" aria-label="GitHub" className="grid h-11 w-11 place-items-center rounded-xl border border-mint/15 text-muted hover:border-aqua/60 hover:text-mint"><GithubIcon /></a>
           <a href={profile.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn" className="grid h-11 w-11 place-items-center rounded-xl border border-mint/15 text-muted hover:border-aqua/60 hover:text-mint"><LinkedinIcon /></a>
           <a href={`mailto:${profile.email}`} aria-label="Email" className="grid h-11 w-11 place-items-center rounded-xl border border-mint/15 text-muted hover:border-aqua/60 hover:text-mint"><Mail size={18} /></a>
+          <a href={profile.resume} target="_blank" rel="noreferrer" className="inline-flex h-11 items-center gap-2 rounded-xl border border-mint/15 px-4 text-sm text-muted hover:border-aqua/60 hover:text-mint"><FileText size={16} /> View CV</a>
         </div>
       </div>
     </section>
@@ -608,6 +633,7 @@ export default function App() {
         <Qualifications />
         <Stack />
         <Experience />
+        <Demos />
         <Projects />
         <Leadership />
         <BuildBand />
