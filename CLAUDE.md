@@ -5,6 +5,7 @@ React + Vite + TypeScript + Tailwind v4. Content: `src/data.ts`. Brand tokens: `
 ## Brand identity (do not change without asking)
 - Deep Teal `#071B1B` (background), Dark Teal `#0B3030` (surfaces), Aqua `#12B8A6` (accent), Mint `#8BE5D5` (highlight)
 - Translucent glassmorphism cards (`.glass`), clean modern type (Space Grotesk / Inter / JetBrains Mono)
+- Aurora "green galaxy" accents (added at Jethro's request): Emerald `#2EE59D`, Lime `#C6F432`, Cyan `#22D3EE`, Space `#030D0D` (page background behind the starfield). Effects live in `src/fx/` (Galaxy starfield, LightStreaks, FlowDiagram, useSpotlight). Accent words use italic Instrument Serif via `.accent`.
 - **Never use purple** or the typical purple-gradient dev-portfolio look.
 
 ## Section order

@@ -9,6 +9,10 @@ import {
   projects, qualifications, services, techStack, type Project,
 } from './data'
 import DemoDeck from './DemoDeck'
+import Galaxy from './fx/Galaxy'
+import LightStreaks from './fx/LightStreaks'
+import FlowDiagram from './fx/FlowDiagram'
+import useSpotlight from './fx/useSpotlight'
 import Hero from './Hero'
 
 const NAV = [
@@ -74,10 +78,10 @@ function useCycle(length: number, ms = 2400) {
 
 function Section({ id, eyebrow, title, intro, children }: { id: string; eyebrow: string; title: ReactNode; intro?: string; children: ReactNode }) {
   return (
-    <section id={id} className="mx-auto max-w-6xl px-4 py-20 sm:px-6 md:py-28">
-      <div className="reveal mb-12 max-w-2xl">
-        <p className="eyebrow mb-3">{eyebrow}</p>
-        <h2 className="font-display text-3xl font-semibold tracking-tight text-white sm:text-5xl">{title}</h2>
+    <section id={id} className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 md:py-28">
+      <div className="reveal mb-12 max-w-3xl">
+        <p className="eyebrow mb-4 flex items-center gap-3"><span className="h-px w-8 bg-gradient-to-r from-lime to-emerald" />{eyebrow}</p>
+        <h2 className="font-display text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-6xl">{title}</h2>
         {intro && <p className="mt-4 text-lg leading-relaxed text-muted">{intro}</p>}
       </div>
       {children}
@@ -145,21 +149,31 @@ function Services() {
     <Section
       id="services"
       eyebrow="What I do"
-      title={<>Built to work. <span className="text-aqua">Designed to sell.</span></>}
+      title={<>Built to work. <span className="accent">Designed to sell.</span></>}
       intro="One developer who can take a project from requirements to a launched product. Pick what you need."
     >
+      <LightStreaks className="absolute -top-10 left-1/2 -z-10 h-[520px] w-[140vw] max-w-none -translate-x-1/2 opacity-70" />
+
+      <div className="reveal glass spotlight mb-5 overflow-hidden !rounded-3xl p-5 sm:p-7">
+        <div className="mb-2 flex flex-wrap items-center justify-between gap-3 px-1">
+          <p className="font-mono text-[11px] uppercase tracking-[.25em] text-emerald">● How a project flows</p>
+          <p className="font-mono text-[11px] text-muted">7 steps · 1 developer · 0 handoffs</p>
+          <p className="font-mono text-[11px] text-lime/80 sm:hidden">Swipe the diagram →</p>
+        </div>
+        <FlowDiagram />
+      </div>
+
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {services.map((s, n) => (
-          <article key={s.key} className="reveal glass glass-hover group relative overflow-hidden p-7" style={{ transitionDelay: `${n * 60}ms` }}>
-            <div className="pointer-events-none absolute -right-12 -top-12 h-36 w-36 rounded-full bg-aqua/0 blur-3xl transition duration-500 group-hover:bg-aqua/20" />
+          <article key={s.key} className="reveal glass glass-hover spotlight group relative p-7" style={{ transitionDelay: `${n * 60}ms` }}>
             <div className="mb-6 flex items-start justify-between">
-              <div className="grid h-14 w-14 place-items-center rounded-2xl border border-aqua/30 bg-gradient-to-br from-aqua/25 to-dark text-mint [&>svg]:h-6 [&>svg]:w-6">
+              <div className="grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-emerald/30 via-aqua/15 to-cyan/10 text-mint ring-1 ring-emerald/30 transition duration-500 group-hover:from-lime/40 group-hover:text-lime group-hover:shadow-[0_0_30px_-6px] group-hover:shadow-emerald/70 [&>svg]:h-6 [&>svg]:w-6">
                 {SERVICE_ICONS[s.key]}
               </div>
-              <span className="font-mono text-xs text-muted">0{n + 1}</span>
+              <span className="font-mono text-xs text-muted transition group-hover:text-lime">0{n + 1}</span>
             </div>
             <h3 className="font-display text-2xl font-semibold text-white">{s.title}</h3>
-            <p className="mt-1 font-mono text-xs uppercase tracking-wider text-aqua">{s.tag}</p>
+            <p className="mt-1 font-mono text-xs uppercase tracking-wider text-emerald">{s.tag}</p>
             <p className="mt-4 leading-relaxed text-muted">{s.body}</p>
             <ul className="mt-5 space-y-2 border-t border-mint/10 pt-4">
               {s.deliverables.map((d) => (
@@ -175,7 +189,7 @@ function Services() {
 
 function About() {
   return (
-    <Section id="about" eyebrow="About me" title="Where code meets business">
+    <Section id="about" eyebrow="About me" title={<>Where code meets <span className="accent">business.</span></>}>
       <div className="grid gap-6 md:grid-cols-[1.4fr_1fr]">
         <div className="reveal glass p-7 sm:p-9">
           {about.paragraphs.map((p) => <p key={p} className="mb-4 leading-relaxed text-muted last:mb-0">{p}</p>)}
@@ -206,7 +220,7 @@ function About() {
 function Qualifications() {
   const icons = [<Code2 />, <Brain />, <BarChart3 />, <Layout />, <FileText />, <Users />]
   return (
-    <Section id="qualifications" eyebrow="Qualifications & education" title="What I bring to a team">
+    <Section id="qualifications" eyebrow="Qualifications & education" title={<>What I bring to <span className="accent">a team.</span></>}>
       <div className="reveal glass relative mb-5 grid gap-6 overflow-hidden p-7 sm:p-8 md:grid-cols-[auto_1fr_auto] md:items-center">
         <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-aqua/15 blur-3xl" />
         <div className="grid h-14 w-14 place-items-center rounded-2xl bg-aqua/10 text-aqua"><GraduationCap size={28} /></div>
@@ -222,7 +236,7 @@ function Qualifications() {
       </div>
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {qualifications.map((q, n) => (
-          <div key={q.title} className="reveal glass glass-hover p-6" style={{ transitionDelay: `${n * 60}ms` }}>
+          <div key={q.title} className="reveal glass glass-hover spotlight p-6" style={{ transitionDelay: `${n * 60}ms` }}>
             <div className="mb-4 grid h-11 w-11 place-items-center rounded-xl bg-aqua/10 text-aqua [&>svg]:h-5 [&>svg]:w-5">{icons[n]}</div>
             <h3 className="font-display text-lg font-semibold text-white">{q.title}</h3>
             <p className="mt-2 text-sm leading-relaxed text-muted">{q.body}</p>
@@ -240,8 +254,8 @@ function Marquee({ items, reverse }: { items: string[]; reverse?: boolean }) {
     <div className="marquee overflow-hidden py-1.5">
       <div className={`marquee-track ${reverse ? 'reverse' : ''}`}>
         {loop.map((t, n) => (
-          <span key={t + n} aria-hidden={n >= items.length} className="glass inline-flex items-center gap-2 whitespace-nowrap !rounded-full px-5 py-2.5 text-sm text-ink">
-            <span className="h-1.5 w-1.5 rounded-full bg-aqua" />{t}
+          <span key={t + n} aria-hidden={n >= items.length} className="glass inline-flex items-center gap-2 whitespace-nowrap !rounded-full px-5 py-2.5 text-sm text-ink transition hover:!border-emerald/60 hover:text-lime">
+            <span className="h-1.5 w-1.5 rounded-full bg-gradient-to-r from-lime to-emerald shadow-[0_0_8px] shadow-emerald" />{t}
           </span>
         ))}
       </div>
@@ -257,7 +271,7 @@ function Stack() {
       <div className="reveal mx-auto mb-12 max-w-6xl px-4 text-center sm:px-6">
         <p className="eyebrow mb-3">Technical skills</p>
         <h2 className="font-display text-4xl font-bold tracking-tight text-white sm:text-6xl">
-          From database <span className="text-aqua">to dashboard.</span>
+          From database <span className="accent">to dashboard.</span>
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-lg text-muted">Backend, frontend, AI and mobile, all handled by one person, so nothing gets lost between teams.</p>
       </div>
@@ -267,7 +281,7 @@ function Stack() {
       </div>
       <div className="mx-auto mt-14 grid max-w-6xl gap-5 px-4 sm:grid-cols-2 sm:px-6 lg:grid-cols-3">
         {techStack.map((g) => (
-          <div key={g.group} className="reveal glass glass-hover p-6">
+          <div key={g.group} className="reveal glass glass-hover spotlight p-6">
             <div className="mb-4 flex items-center gap-2.5 text-aqua">
               {STACK_ICONS[g.group]}
               <h3 className="font-mono text-sm uppercase tracking-widest">{g.group}</h3>
@@ -286,12 +300,12 @@ function Stack() {
 
 function Experience() {
   return (
-    <Section id="experience" eyebrow="Professional experience" title="Where I've worked">
-      <ol className="relative ml-3 border-l border-aqua/25">
+    <Section id="experience" eyebrow="Professional experience" title={<>Where I've <span className="accent">worked.</span></>}>
+      <ol className="relative ml-3 border-l border-transparent [border-image:linear-gradient(to_bottom,#C6F432,#2EE59D_40%,#22D3EE_80%,transparent)_1]">
         {experience.map((e) => (
           <li key={e.role + e.org} className="reveal relative mb-8 pl-8 last:mb-0">
-            <span className="absolute -left-[7px] top-7 h-3.5 w-3.5 rounded-full border-2 border-aqua bg-deep" />
-            <div className="glass glass-hover p-6 sm:p-7">
+            <span className="absolute -left-[7px] top-7 h-3.5 w-3.5 rounded-full border-2 border-emerald bg-space shadow-[0_0_14px_2px] shadow-emerald/60" />
+            <div className="glass glass-hover spotlight p-6 sm:p-7">
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <h3 className="font-display text-xl font-semibold text-white">{e.role}</h3>
                 <span className="font-mono text-xs text-aqua">{e.period}</span>
@@ -329,7 +343,7 @@ function Demos() {
         <div className="max-w-xl">
           <p className="eyebrow mb-3">Proof of work</p>
           <h2 className="font-display text-3xl font-semibold tracking-tight text-white sm:text-5xl">
-            Don't take my word for it. <span className="text-aqua">Watch it run.</span>
+            Don't take my word for it. <span className="accent">Watch it run.</span>
           </h2>
         </div>
         <p className="max-w-xs font-mono text-xs leading-relaxed text-muted">
@@ -413,7 +427,7 @@ function Projects() {
   const p = projects[active]
   const slug = p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
   return (
-    <Section id="projects" eyebrow="Featured work" title={<>Systems I've <span className="text-aqua">shipped.</span></>}>
+    <Section id="projects" eyebrow="Featured work" title={<>Systems I've <span className="accent">shipped.</span></>}>
       <div className="reveal">
         <div role="tablist" aria-label="Projects" className="glass mx-auto mb-8 flex max-w-full gap-1 overflow-x-auto !rounded-full p-1.5 sm:w-fit">
           {projects.map((pr, n) => (
@@ -464,7 +478,7 @@ function Leadership() {
   const top = leadership.find((l) => l.highlight)!
   const rest = leadership.filter((l) => !l.highlight)
   return (
-    <Section id="leadership" eyebrow="Leadership & achievements" title="Leading beyond the code">
+    <Section id="leadership" eyebrow="Leadership & achievements" title={<>Leading beyond <span className="accent">the code.</span></>}>
       <div className="grid gap-5 lg:grid-cols-[1.2fr_1fr]">
         <div className="reveal glass relative overflow-hidden p-8">
           <div className="pointer-events-none absolute -bottom-20 -left-10 h-56 w-56 rounded-full bg-aqua/15 blur-3xl" />
@@ -503,12 +517,13 @@ function Leadership() {
 function BuildBand() {
   const i = useCycle(pitch.buildWords.length, 2200)
   return (
-    <section className="relative overflow-hidden py-24 md:py-32" aria-label="What I build">
+    <section className="relative overflow-hidden py-28 md:py-40" aria-label="What I build">
+      <LightStreaks className="absolute inset-0 h-full w-full" />
       <div className="pointer-events-none absolute left-1/2 top-1/2 h-72 w-[680px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-aqua/10 blur-[110px]" />
       <h2 className="relative flex flex-wrap items-center justify-center gap-x-5 gap-y-4 px-4 font-display text-4xl font-bold tracking-tight text-white sm:text-6xl md:text-7xl">
         I build
-        <span className="inline-grid min-w-[7ch] place-items-center rounded-full border border-aqua/40 bg-dark/80 px-8 py-3 shadow-[0_0_60px_-15px] shadow-aqua/60 sm:px-10 sm:py-4">
-          <span key={i} className="word-in whitespace-nowrap text-mint">{pitch.buildWords[i]}</span>
+        <span className="aurora-ring inline-grid min-w-[7ch] place-items-center rounded-full bg-space/85 px-8 py-3 shadow-[0_0_80px_-10px] shadow-emerald/50 backdrop-blur sm:px-10 sm:py-4">
+          <span key={i} className="word-in accent whitespace-nowrap">{pitch.buildWords[i]}</span>
         </span>
       </h2>
     </section>
@@ -534,7 +549,7 @@ function Contact() {
   ]
   return (
     <section id="contact" className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
-      <form onSubmit={send} className="reveal mx-auto flex max-w-xl items-center gap-2 rounded-full border border-mint/20 bg-ink p-2 pl-6 shadow-2xl shadow-aqua/10">
+      <form onSubmit={send} className="reveal aurora-ring mx-auto flex max-w-xl items-center gap-2 rounded-full bg-ink p-2 pl-6 shadow-[0_0_70px_-12px] shadow-emerald/50">
         <label htmlFor="idea" className="sr-only">What do you want to build?</label>
         <input
           id="idea"
@@ -549,8 +564,8 @@ function Contact() {
       </form>
 
       <div className="reveal relative mx-auto mt-20 aspect-square w-full max-w-[420px]" aria-hidden="true">
-        <div className="absolute inset-[12%] rounded-full border border-aqua/20" />
-        <div className="absolute inset-[26%] rounded-full border border-dashed border-aqua/25" />
+        <div className="absolute inset-[12%] rounded-full border border-emerald/25 shadow-[0_0_40px_-10px_inset] shadow-cyan/30" />
+        <div className="absolute inset-[26%] animate-spin-slow rounded-full border border-dashed border-lime/30" />
         <div className="absolute inset-[34%] rounded-full bg-aqua/20 blur-2xl" />
         <div className="animate-float absolute inset-[36%] grid place-items-center rounded-full border-2 border-aqua/60 bg-dark">
           <span className="font-display text-4xl font-bold text-aqua">J<span className="text-mint">M</span></span>
@@ -585,10 +600,12 @@ function Contact() {
 
 export default function App() {
   useReveal()
+  useSpotlight()
   return (
     <>
       <Navbar />
-      <main>
+      <Galaxy />
+      <main className="relative z-10">
         <Hero />
         <Services />
         <About />
@@ -601,7 +618,7 @@ export default function App() {
         <BuildBand />
         <Contact />
       </main>
-      <footer className="border-t border-mint/10 py-8 text-center font-mono text-xs text-muted">
+      <footer className="relative z-10 border-t border-mint/10 py-8 text-center font-mono text-xs text-muted">
         © {new Date().getFullYear()} {profile.name} · San Pablo City, Laguna
       </footer>
     </>
