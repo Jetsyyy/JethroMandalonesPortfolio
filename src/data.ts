@@ -223,13 +223,25 @@ export const qualifications = [
 ]
 
 export const techStack = [
-  { group: 'Backend', items: ['PHP', 'Laravel', 'Node.js'] },
-  { group: 'Frontend', items: ['React', 'Next.js', 'JavaScript', 'Blade', 'Tailwind CSS'] },
-  { group: 'Database', items: ['MySQL', 'PostgreSQL', 'Firebase', 'Supabase'] },
-  { group: 'AI Integration', items: ['OpenAI API', 'Azure AI', 'Retell AI'] },
-  { group: 'Mobile', items: ['Flutter'] },
-  { group: 'Creative', items: ['Canva', 'CapCut', 'Figma'] },
-  { group: 'Tools', items: ['Git', 'GitHub', 'VS Code', 'Vercel'] },
+  { group: 'Languages', items: ['PHP', 'JavaScript', 'HTML5', 'CSS3', 'SQL', 'Dart'] },
+  { group: 'Frameworks & Libraries', items: ['Laravel', 'React.js', 'Next.js', 'Node.js', 'Tailwind CSS', 'Flutter', 'Riverpod', 'Blade'] },
+  { group: 'Databases & Backend', items: ['MySQL', 'PostgreSQL', 'Firebase', 'Supabase'] },
+  { group: 'AI & Emerging Tech', items: ['OpenAI API', 'Azure AI', 'Retell AI (Voice AI)', 'AI Integration', 'AI-powered apps', 'Predictive Analytics'] },
+  { group: 'Dev Tools & Platforms', items: ['VS Code', 'Git', 'GitHub', 'Vercel', 'Render', 'Postman'] },
+  { group: 'Design & Productivity', items: ['Figma', 'Canva', 'CapCut Pro', 'Notion', 'Trello', 'Google Workspace'] },
+]
+
+// Strongest professional areas, each backed by the tech used for it.
+export const specializations = [
+  { area: 'Full-Stack Web Development', via: 'Laravel · PHP · React · Node.js' },
+  { area: 'Frontend Development', via: 'React · Tailwind CSS · JavaScript' },
+  { area: 'Backend Development', via: 'PHP · Laravel · Node.js' },
+  { area: 'Database Management', via: 'MySQL · PostgreSQL · Firebase' },
+  { area: 'AI Integration', via: 'OpenAI · Azure AI · Retell AI' },
+  { area: 'Voice AI Agents', via: 'Retell AI · prompts · call flows · testing' },
+  { area: 'Business Analytics', via: 'Predictive analytics · Forecasting' },
+  { area: 'UI/UX Design', via: 'Figma · Canva · Prototyping' },
+  { area: 'Systems Analysis', via: 'Requirements gathering · System design' },
 ]
 
 export type Project = {
@@ -248,7 +260,8 @@ export const projects: Project[] = [
   {
     title: "Joshua's Meat Products Inc.",
     kind: 'Predictive Analytics & Inventory Forecasting System',
-    role: 'Lead Programmer / System Analyst',
+    role: 'Lead Programmer / System Analyst · Capstone',
+    badge: 'Capstone project',
     description:
       'A web-based system that forecasts inventory demand and surfaces predictive insights so the business can plan production and cut waste.',
     tech: ['Laravel', 'PHP', 'MySQL', 'Analytics'],

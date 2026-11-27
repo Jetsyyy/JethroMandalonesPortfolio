@@ -6,7 +6,7 @@ import {
 } from 'lucide-react'
 import {
   education, experience, leadership, leadershipSummary, pitch, profile,
-  projects, qualifications, services, techStack, type Project,
+  projects, qualifications, services, specializations, techStack, type Project,
 } from './data'
 import DemoDeck from './DemoDeck'
 import Galaxy from './fx/Galaxy'
@@ -15,6 +15,7 @@ import FlowDiagram from './fx/FlowDiagram'
 import useSpotlight from './fx/useSpotlight'
 import Hero from './Hero'
 import About from './About'
+import SkillPill from './SkillPill'
 import Certificates from './Certificates'
 import { CreativeIntro, CreativeReel } from './Creative'
 import AIShowcase from './AIShowcase'
@@ -33,13 +34,12 @@ const NAV = [
 ]
 
 const STACK_ICONS: Record<string, ReactNode> = {
-  Backend: <Server size={18} />,
-  Frontend: <Layout size={18} />,
-  Database: <Database size={18} />,
-  'AI Integration': <Brain size={18} />,
-  Mobile: <Smartphone size={18} />,
-  Creative: <Palette size={18} />,
-  Tools: <Wrench size={18} />,
+  Languages: <Code2 size={18} />,
+  'Frameworks & Libraries': <Layout size={18} />,
+  'Databases & Backend': <Server size={18} />,
+  'AI & Emerging Tech': <Brain size={18} />,
+  'Dev Tools & Platforms': <Wrench size={18} />,
+  'Design & Productivity': <Palette size={18} />,
 }
 
 const SERVICE_ICONS: Record<string, ReactNode> = {
@@ -237,9 +237,7 @@ function Marquee({ items, reverse }: { items: string[]; reverse?: boolean }) {
     <div className="marquee overflow-hidden py-1.5">
       <div className={`marquee-track ${reverse ? 'reverse' : ''}`}>
         {loop.map((t, n) => (
-          <span key={t + n} aria-hidden={n >= items.length} className="glass inline-flex items-center gap-2 whitespace-nowrap !rounded-full px-5 py-2.5 text-sm text-ink transition hover:!border-emerald/60 hover:text-lime">
-            <span className="h-1.5 w-1.5 rounded-full bg-gradient-to-r from-lime to-emerald shadow-[0_0_8px] shadow-emerald" />{t}
-          </span>
+          <span key={t + n} aria-hidden={n >= items.length}><SkillPill name={t} size="lg" /></span>
         ))}
       </div>
     </div>
@@ -262,7 +260,27 @@ function Stack() {
         <Marquee items={all.slice(0, half)} />
         <Marquee items={all.slice(half)} reverse />
       </div>
-      <div className="mx-auto mt-14 grid max-w-6xl gap-5 px-4 sm:grid-cols-2 sm:px-6 lg:grid-cols-3">
+      {/* what I'm strongest at */}
+      <div className="reveal glass spotlight mx-4 mt-14 max-w-6xl !rounded-3xl p-6 sm:mx-6 sm:p-8 xl:mx-auto">
+        <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+          <p className="font-display text-2xl font-semibold text-white sm:text-3xl">What I'm <span className="accent">strongest at.</span></p>
+          <p className="font-mono text-[11px] uppercase tracking-[.2em] text-muted">{specializations.length} specializations · backed by real projects</p>
+        </div>
+        <ol className="grid gap-x-10 md:grid-cols-2">
+          {specializations.map((s, i) => (
+            <li key={s.area} className="group flex items-baseline gap-4 border-t border-mint/10 py-4 transition-colors hover:border-lime/40">
+              <span className="w-7 shrink-0 font-mono text-xs text-aqua transition group-hover:text-lime">{String(i + 1).padStart(2, '0')}</span>
+              <span className="flex-1">
+                <span className="block font-display text-lg font-semibold text-white">{s.area}</span>
+                <span className="mt-0.5 block font-mono text-xs text-muted transition group-hover:text-mint">{s.via}</span>
+              </span>
+              <span aria-hidden className="h-px w-0 self-center bg-gradient-to-r from-lime to-transparent transition-all duration-500 group-hover:w-10" />
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      <div className="mx-auto mt-5 grid max-w-6xl gap-5 px-4 sm:grid-cols-2 sm:px-6 lg:grid-cols-3">
         {techStack.map((g) => (
           <div key={g.group} className="reveal glass glass-hover spotlight p-6">
             <div className="mb-4 flex items-center gap-2.5 text-aqua">
@@ -271,7 +289,7 @@ function Stack() {
             </div>
             <div className="flex flex-wrap gap-2">
               {g.items.map((t) => (
-                <span key={t} className="rounded-lg border border-mint/10 bg-deep/60 px-3 py-1.5 text-sm text-ink">{t}</span>
+                <SkillPill key={t} name={t} />
               ))}
             </div>
           </div>
