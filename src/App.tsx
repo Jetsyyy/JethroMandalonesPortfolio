@@ -313,7 +313,7 @@ function Stack() {
 function Experience() {
   return (
     <Section id="experience" eyebrow="Professional experience" title={<>Where I've <span className="accent">worked.</span></>}>
-      <ol className="relative ml-3 border-l border-transparent [border-image:linear-gradient(to_bottom,#C6F432,#2EE59D_40%,#22D3EE_80%,transparent)_1]">
+      <ol className="relative ml-3 border-l border-transparent [border-image:linear-gradient(to_bottom,#D6F7FF,#6FD6EA_40%,#4C9BC4_80%,transparent)_1]">
         {experience.map((e) => (
           <li key={e.role + e.org} className="reveal relative mb-8 pl-8 last:mb-0">
             <span className="absolute -left-[7px] top-7 h-3.5 w-3.5 rounded-full border-2 border-emerald bg-space shadow-[0_0_14px_2px] shadow-emerald/60" />

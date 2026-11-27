@@ -150,13 +150,13 @@ function CaseStudy({ list, index, origin, onClose, onStep }: {
 
   return createPortal(
     <div role="dialog" aria-modal="true" aria-label={`${w.title} case study`} className="fixed inset-0 z-[100] overflow-y-auto bg-space/95 backdrop-blur-md">
-      <div className="pointer-events-none absolute left-1/3 top-1/2 h-[60vh] w-[60vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(46,229,157,.16),transparent)] blur-2xl" />
+      <div className="pointer-events-none absolute left-1/3 top-1/2 h-[60vh] w-[60vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(111,214,234,.16),transparent)] blur-2xl" />
       <div className="relative mx-auto grid min-h-full max-w-7xl items-center gap-8 px-4 py-20 sm:px-8 lg:grid-cols-[1.35fr_1fr] lg:gap-14">
         <button onClick={onClose} aria-label="Close case study" className="fixed right-4 top-4 z-10 grid h-12 w-12 place-items-center rounded-full border border-mint/25 bg-space/80 text-mint transition hover:rotate-90 hover:border-lime hover:text-lime sm:right-8 sm:top-8">
           <X size={20} />
         </button>
 
-        <div ref={art} className={`relative overflow-hidden rounded-[28px] bg-dark shadow-[0_40px_120px_-30px_rgba(46,229,157,.45)] ring-1 ring-emerald/30 ${w.ratio === 'post' ? 'mx-auto aspect-[4/5] w-full max-w-[520px]' : 'aspect-video w-full'}`}>
+        <div ref={art} className={`relative overflow-hidden rounded-[28px] bg-dark shadow-[0_40px_120px_-30px_rgba(111,214,234,.45)] ring-1 ring-emerald/30 ${w.ratio === 'post' ? 'mx-auto aspect-[4/5] w-full max-w-[520px]' : 'aspect-video w-full'}`}>
           {w.group === 'Video' && flown ? (
             <iframe src={`https://drive.google.com/file/d/${w.driveId}/preview`} title={w.title} allow="autoplay; fullscreen" allowFullScreen className="h-full w-full" />
           ) : (
@@ -283,7 +283,7 @@ export function CreativeReel() {
 
   return (
     <section ref={wrap} className="relative" style={{ height: `${Math.max(320, n * 26)}vh` }} aria-label="Graphics and video portfolio">
-      <div className="sticky top-0 h-[100svh] overflow-hidden bg-[radial-gradient(ellipse_at_50%_50%,rgba(3,13,13,.2),#020707_70%)]">
+      <div className="sticky top-0 h-[100svh] overflow-hidden bg-[radial-gradient(ellipse_at_50%_50%,rgba(3,18,26,.2),#02090E_70%)]">
         {/* header */}
         <div className="relative z-30 mx-auto flex max-w-7xl flex-wrap items-start justify-between gap-4 px-4 pt-24 sm:px-8">
           <div>
@@ -305,10 +305,10 @@ export function CreativeReel() {
 
         {/* the light */}
         <div aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2">
-          <div className="absolute left-1/2 top-1/2 h-[70vmin] w-[70vmin] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(46,229,157,.22),rgba(34,211,238,.06)_55%,transparent)]" />
-          <div className="orbit-rays absolute left-1/2 top-1/2 h-[46vmin] w-[46vmin] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-70 [background:repeating-conic-gradient(from_0deg,rgba(230,255,240,.22)_0deg_.6deg,transparent_.6deg_9deg)] [mask-image:radial-gradient(closest-side,#000_10%,transparent)]" />
-          <div className="absolute left-1/2 top-1/2 h-36 w-36 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(255,255,255,.95),rgba(198,244,50,.35)_40%,transparent)] blur-md" />
-          <div className="orbit-core absolute left-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white shadow-[0_0_40px_14px_rgba(255,255,255,.85),0_0_120px_40px_rgba(46,229,157,.5)]" />
+          <div className="absolute left-1/2 top-1/2 h-[70vmin] w-[70vmin] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(111,214,234,.22),rgba(76,155,196,.06)_55%,transparent)]" />
+          <div className="orbit-rays absolute left-1/2 top-1/2 h-[46vmin] w-[46vmin] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-70 [background:repeating-conic-gradient(from_0deg,rgba(230,250,255,.22)_0deg_.6deg,transparent_.6deg_9deg)] [mask-image:radial-gradient(closest-side,#000_10%,transparent)]" />
+          <div className="absolute left-1/2 top-1/2 h-36 w-36 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(255,255,255,.95),rgba(214,247,255,.35)_40%,transparent)] blur-md" />
+          <div className="orbit-core absolute left-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white shadow-[0_0_40px_14px_rgba(255,255,255,.85),0_0_120px_40px_rgba(111,214,234,.5)]" />
           <div className="absolute left-1/2 top-1/2 h-px w-[60vmin] -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-transparent via-white/70 to-transparent" />
         </div>
 
@@ -337,8 +337,8 @@ export function CreativeReel() {
                     transform: `translate(-50%,-50%) translate3d(${x}px, ${cy}px, ${z}px) rotateY(${-cx * 0.035 - 8}deg) rotateZ(${Math.sin(th) * -6}deg)`,
                     filter: `brightness(${0.35 + depth * 0.75}) saturate(${0.6 + depth * 0.5})`,
                     boxShadow: isActive
-                      ? '0 0 0 2px #C6F432, 0 30px 70px -20px rgba(198,244,50,.55)'
-                      : `0 0 0 1.5px rgba(${w.group === 'Campus' ? '46,229,157' : w.group === 'Video' ? '198,244,50' : '34,211,238'},${0.25 + depth * 0.45})`,
+                      ? '0 0 0 2px #D6F7FF, 0 30px 70px -20px rgba(214,247,255,.55)'
+                      : `0 0 0 1.5px rgba(${w.group === 'Campus' ? '111,214,234' : w.group === 'Video' ? '214,247,255' : '76,155,196'},${0.25 + depth * 0.45})`,
                     zIndex: Math.round(depth * 100),
                   }}
                 >
@@ -359,7 +359,7 @@ export function CreativeReel() {
         </div>
 
         {/* big title of the piece at the front */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 bg-gradient-to-t from-[#020707] via-[#020707]/70 to-transparent px-4 pb-8 pt-20 sm:px-8">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 bg-gradient-to-t from-[#02090E] via-[#02090E]/70 to-transparent px-4 pb-8 pt-20 sm:px-8">
           <div className="mx-auto flex max-w-7xl items-end justify-between gap-6">
             <div className="min-w-0">
               <p className="mb-2 font-mono text-[11px] uppercase tracking-[.25em] text-emerald">

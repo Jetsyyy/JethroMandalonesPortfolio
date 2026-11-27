@@ -13,19 +13,19 @@ function visorTexture() {
   c.width = 512; c.height = 320
   const g = c.getContext('2d')!
   const bg = g.createLinearGradient(0, 0, 512, 320)
-  bg.addColorStop(0, '#03100f'); bg.addColorStop(1, '#061c1b')
+  bg.addColorStop(0, '#031018'); bg.addColorStop(1, '#061B24')
   g.fillStyle = bg; g.fillRect(0, 0, 512, 320)
   const sheen = g.createLinearGradient(0, 320, 512, 0)
-  sheen.addColorStop(0, 'rgba(198,244,50,0)')
-  sheen.addColorStop(0.35, 'rgba(198,244,50,.28)')
-  sheen.addColorStop(0.55, 'rgba(46,229,157,.35)')
-  sheen.addColorStop(0.75, 'rgba(34,211,238,.32)')
-  sheen.addColorStop(1, 'rgba(34,211,238,0)')
+  sheen.addColorStop(0, 'rgba(214,247,255,0)')
+  sheen.addColorStop(0.35, 'rgba(214,247,255,.28)')
+  sheen.addColorStop(0.55, 'rgba(111,214,234,.35)')
+  sheen.addColorStop(0.75, 'rgba(76,155,196,.32)')
+  sheen.addColorStop(1, 'rgba(76,155,196,0)')
   g.fillStyle = sheen; g.fillRect(0, 0, 512, 320)
   // scanlines
-  g.fillStyle = 'rgba(139,229,213,.05)'
+  g.fillStyle = 'rgba(168,232,244,.05)'
   for (let y = 0; y < 320; y += 6) g.fillRect(0, y, 512, 2)
-  g.fillStyle = 'rgba(139,229,213,.55)'
+  g.fillStyle = 'rgba(168,232,244,.55)'
   g.font = '600 28px "JetBrains Mono", monospace'
   g.textAlign = 'center'
   g.fillText('JM·AI', 256, 52)
@@ -47,10 +47,10 @@ function Robot({ reduced, poke, pointer }: Omit<Props, 'active'>) {
   const lastPoke = useRef(0)
 
   const white = useMemo(() => new THREE.MeshPhysicalMaterial({ color: '#eef5f3', roughness: 0.28, metalness: 0.05, clearcoat: 1, clearcoatRoughness: 0.12 }), [])
-  const chrome = useMemo(() => new THREE.MeshStandardMaterial({ color: '#b9c9c6', roughness: 0.18, metalness: 1 }), [])
-  const dark = useMemo(() => new THREE.MeshStandardMaterial({ color: '#0d1f1e', roughness: 0.4, metalness: 0.6 }), [])
-  const glow = useMemo(() => new THREE.MeshStandardMaterial({ color: '#2EE59D', emissive: '#2EE59D', emissiveIntensity: 2.2, toneMapped: false }), [])
-  const glowLime = useMemo(() => new THREE.MeshStandardMaterial({ color: '#C6F432', emissive: '#C6F432', emissiveIntensity: 2.4, toneMapped: false }), [])
+  const chrome = useMemo(() => new THREE.MeshStandardMaterial({ color: '#B8C6CE', roughness: 0.18, metalness: 1 }), [])
+  const dark = useMemo(() => new THREE.MeshStandardMaterial({ color: '#0C1E27', roughness: 0.4, metalness: 0.6 }), [])
+  const glow = useMemo(() => new THREE.MeshStandardMaterial({ color: '#6FD6EA', emissive: '#6FD6EA', emissiveIntensity: 2.2, toneMapped: false }), [])
+  const glowLime = useMemo(() => new THREE.MeshStandardMaterial({ color: '#D6F7FF', emissive: '#D6F7FF', emissiveIntensity: 2.4, toneMapped: false }), [])
 
   useFrame((state, dt) => {
     const t = state.clock.elapsedTime
@@ -91,11 +91,11 @@ function Robot({ reduced, poke, pointer }: Omit<Props, 'active'>) {
       {/* hover ring */}
       <mesh ref={ring} position={[0, -1.72, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <torusGeometry args={[0.95, 0.025, 16, 96]} />
-        <meshStandardMaterial color="#2EE59D" emissive="#2EE59D" emissiveIntensity={1.8} toneMapped={false} />
+        <meshStandardMaterial color="#6FD6EA" emissive="#6FD6EA" emissiveIntensity={1.8} toneMapped={false} />
       </mesh>
       <mesh position={[0, -1.72, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <circleGeometry args={[0.9, 64]} />
-        <meshBasicMaterial color="#2EE59D" transparent opacity={0.12} />
+        <meshBasicMaterial color="#6FD6EA" transparent opacity={0.12} />
       </mesh>
 
       {/* torso */}
@@ -149,7 +149,7 @@ function Robot({ reduced, poke, pointer }: Omit<Props, 'active'>) {
             <mesh material={chrome}><cylinderGeometry args={[0.2, 0.2, 0.1, 32]} /></mesh>
             <mesh position={[0, s * 0.055, 0]} rotation={[0, 0, 0]}>
               <torusGeometry args={[0.13, 0.018, 12, 48]} />
-              <meshStandardMaterial color="#22D3EE" emissive="#22D3EE" emissiveIntensity={2} toneMapped={false} />
+              <meshStandardMaterial color="#4C9BC4" emissive="#4C9BC4" emissiveIntensity={2} toneMapped={false} />
             </mesh>
           </group>
         ))}
@@ -175,17 +175,17 @@ export default function RobotScene({ active, reduced, poke, pointer }: Props) {
     >
       <ambientLight intensity={0.45} />
       <directionalLight position={[3, 5, 4]} intensity={1.6} castShadow />
-      <pointLight position={[-2.5, 0.5, 2]} intensity={8} distance={7} color="#2EE59D" />
-      <pointLight position={[2.5, -0.5, 1.5]} intensity={6} distance={7} color="#22D3EE" />
+      <pointLight position={[-2.5, 0.5, 2]} intensity={8} distance={7} color="#6FD6EA" />
+      <pointLight position={[2.5, -0.5, 1.5]} intensity={6} distance={7} color="#4C9BC4" />
       <Environment resolution={256}>
         <Lightformer form="rect" intensity={2.4} position={[0, 4, 3]} scale={[6, 2, 1]} color="#ffffff" />
-        <Lightformer form="rect" intensity={1.6} position={[-4, 0, 1]} rotation-y={Math.PI / 2} scale={[4, 3, 1]} color="#2EE59D" />
-        <Lightformer form="rect" intensity={1.4} position={[4, 1, 0]} rotation-y={-Math.PI / 2} scale={[4, 3, 1]} color="#22D3EE" />
-        <Lightformer form="ring" intensity={1} position={[0, -3, 2]} scale={2} color="#C6F432" />
+        <Lightformer form="rect" intensity={1.6} position={[-4, 0, 1]} rotation-y={Math.PI / 2} scale={[4, 3, 1]} color="#6FD6EA" />
+        <Lightformer form="rect" intensity={1.4} position={[4, 1, 0]} rotation-y={-Math.PI / 2} scale={[4, 3, 1]} color="#4C9BC4" />
+        <Lightformer form="ring" intensity={1} position={[0, -3, 2]} scale={2} color="#D6F7FF" />
       </Environment>
       <Robot reduced={reduced} poke={poke} pointer={pointer} />
       <ContactShadows position={[0, -2.08, 0]} scale={5} blur={2.6} far={2} opacity={0.5} color="#000" />
-      {!reduced && <Sparkles count={30} scale={[5, 4, 3]} size={2} speed={0.3} color="#8BE5D5" opacity={0.6} />}
+      {!reduced && <Sparkles count={30} scale={[5, 4, 3]} size={2} speed={0.3} color="#A8E8F4" opacity={0.6} />}
     </Canvas>
   )
 }

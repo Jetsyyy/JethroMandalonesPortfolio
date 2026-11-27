@@ -3,10 +3,14 @@
 React + Vite + TypeScript + Tailwind v4. Content: `src/data.ts`. Brand tokens: `@theme` in `src/index.css`.
 
 ## Brand identity (do not change without asking)
-- Deep Teal `#071B1B` (background), Dark Teal `#0B3030` (surfaces), Aqua `#12B8A6` (accent), Mint `#8BE5D5` (highlight)
-- Translucent glassmorphism cards (`.glass`), clean modern type (Space Grotesk / Inter / JetBrains Mono)
-- Aurora "green galaxy" accents (added at Jethro's request): Emerald `#2EE59D`, Lime `#C6F432`, Cyan `#22D3EE`, Space `#030D0D` (page background behind the starfield). Effects live in `src/fx/` (Galaxy starfield, LightStreaks, FlowDiagram, useSpotlight). Accent words use italic Instrument Serif via `.accent`. For words that animate in (key-swapped), use `.accent-solid` + `.word-rise` (clip-path wipe): gradient `background-clip:text` and transform/filter animations fail to paint in some renderers.
-- **Never use purple** or the typical purple-gradient dev-portfolio look.
+Mood: **smoky petrol + ice**. Deep blue-teal atmosphere with fog/haze and pale icy-cyan light (Jethro's references: NUORBIT portal, Hanergy misty globe, ArtStation dark slate). Replaced the earlier lime/emerald "green galaxy" on 2026-11-27 at his request.
+- Tokens in `src/index.css` @theme (names kept from older palettes, values are new):
+  - `space` #03121A abyss background · `deep` #061C24 deep petrol · `dark` #0B2B36 petrol surface
+  - `aqua` #3CC4DC glacier cyan (primary accent) · `mint` #A8E8F4 ice · `ink` #E6F3F7 text · `muted` #8AA8B4 steel haze
+  - `emerald` #6FD6EA frost · `lime` #D6F7FF ice glow (brightest highlight, active states) · `cyan` #4C9BC4 steel blue
+- Atmosphere: `src/fx/Galaxy.tsx` (dim starfield, drifting fog banks `.mist`, misty floor glow), LightStreaks, FlowDiagram, useSpotlight.
+- Translucent glass cards (`.glass`), Space Grotesk / Inter / JetBrains Mono, italic Instrument Serif accent words (`.accent`). For key-swapped animated words use `.accent-solid` + `.word-rise` (clip-path wipe): gradient text and transform/filter animations fail to paint in some renderers.
+- **No purple. No neon lime/green.** Keep it cool, smoky and cinematic.
 
 ## Section order
 Hero (3D desk scene, `src/Hero.tsx` + `src/hero3d/`: scroll opens the laptop, then the sales pitch fades in; lazy-loaded R3F, falls back to plain HTML without WebGL) → Services ("What I do") → AI showcase (`src/AIShowcase.tsx` + `src/ai/RobotScene.tsx`: 3D robot that follows the cursor inside a HUD frame; lazy-loaded near viewport) → About → Qualifications & Education → Technical Skills → Professional Experience → Demos (swipeable flip-card deck of Drive videos, `src/DemoDeck.tsx`, data in `demos`) → Featured Projects (tabbed showcase) → Creative (graphics & video: `src/Creative.tsx`, cinematic serif line reveal with work popping between words + pinned 3D orbit: works circle a glowing light, scroll spins the next one to the front, click flies the card into a case-study panel; data in `creativeWorks`, files in Drive) → Leadership & Achievements → Certificates (scroll-pinned 3D fly-in stack, `src/Certificates.tsx`, data in `certificates`, files in Drive) → "I build ___" band → Contact ("Have something to build?" + Let's talk)

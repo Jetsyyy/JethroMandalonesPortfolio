@@ -18,11 +18,11 @@ export default function LightStreaks({ className = '' }: { className?: string })
     <svg className={`pointer-events-none ${className}`} viewBox="0 0 1440 700" preserveAspectRatio="none" aria-hidden>
       <defs>
         <linearGradient id={`g${uid}`} x1="0" x2="1" y1="1" y2="0">
-          <stop offset="0" stopColor="#C6F432" stopOpacity="0" />
-          <stop offset=".25" stopColor="#C6F432" />
-          <stop offset=".55" stopColor="#2EE59D" />
-          <stop offset=".85" stopColor="#22D3EE" />
-          <stop offset="1" stopColor="#22D3EE" stopOpacity="0" />
+          <stop offset="0" stopColor="#D6F7FF" stopOpacity="0" />
+          <stop offset=".25" stopColor="#D6F7FF" />
+          <stop offset=".55" stopColor="#6FD6EA" />
+          <stop offset=".85" stopColor="#4C9BC4" />
+          <stop offset="1" stopColor="#4C9BC4" stopOpacity="0" />
         </linearGradient>
         <filter id={`b${uid}`} x="-20%" y="-50%" width="140%" height="200%">
           <feGaussianBlur stdDeviation="10" />
@@ -39,7 +39,7 @@ export default function LightStreaks({ className = '' }: { className?: string })
       {/* comets travelling along the threads */}
       <g>
         {PATHS.map((d, i) => (
-          <path key={i} d={d} fill="none" stroke="#F3FFD6" strokeWidth={i === 1 ? 3 : 2} strokeLinecap="round"
+          <path key={i} d={d} fill="none" stroke="#F4FEFF" strokeWidth={i === 1 ? 3 : 2} strokeLinecap="round"
             strokeDasharray="90 1310" className="streak-flow" style={{ ['--dur' as string]: `${5 + i * 1.3}s`, animationDelay: `${-i * 1.7}s` }} />
         ))}
       </g>

@@ -39,14 +39,14 @@ export default function FlowDiagram() {
         aria-label="Project flow: your brief, then analysis and design, then build, then AI integration and analytics, then ship.">
         <defs>
           <linearGradient id="flow-line" x1="0" x2="1">
-            <stop offset="0" stopColor="#12B8A6" stopOpacity=".5" />
-            <stop offset=".5" stopColor="#2EE59D" stopOpacity=".8" />
-            <stop offset="1" stopColor="#C6F432" stopOpacity=".6" />
+            <stop offset="0" stopColor="#3CC4DC" stopOpacity=".5" />
+            <stop offset=".5" stopColor="#6FD6EA" stopOpacity=".8" />
+            <stop offset="1" stopColor="#D6F7FF" stopOpacity=".6" />
           </linearGradient>
           <radialGradient id="flow-core">
-            <stop offset="0" stopColor="#E9FF9E" />
-            <stop offset=".45" stopColor="#C6F432" />
-            <stop offset="1" stopColor="#2EE59D" />
+            <stop offset="0" stopColor="#F2FDFF" />
+            <stop offset=".45" stopColor="#D6F7FF" />
+            <stop offset="1" stopColor="#6FD6EA" />
           </radialGradient>
           <filter id="flow-glow" x="-100%" y="-100%" width="300%" height="300%">
             <feGaussianBlur stdDeviation="14" />
@@ -56,10 +56,10 @@ export default function FlowDiagram() {
         {LINKS.map((d, i) => (
           <g key={i}>
             <path d={d} fill="none" stroke="url(#flow-line)" strokeWidth="1.4" strokeDasharray="4 5" />
-            <circle r="3.6" fill="#E9FF9E">
+            <circle r="3.6" fill="#F2FDFF">
               <animateMotion dur={`${2.2 + (i % 3) * 0.35}s`} begin={`${(i * 0.37) % 2}s`} repeatCount="indefinite" path={d} />
             </circle>
-            <circle r="9" fill="#2EE59D" opacity=".25">
+            <circle r="9" fill="#6FD6EA" opacity=".25">
               <animateMotion dur={`${2.2 + (i % 3) * 0.35}s`} begin={`${(i * 0.37) % 2}s`} repeatCount="indefinite" path={d} />
             </circle>
           </g>
@@ -67,25 +67,25 @@ export default function FlowDiagram() {
 
         {NODES.map((n) => (
           <g key={n.id} transform={`translate(${n.x - HALF} ${n.y - 34})`}>
-            <rect width={HALF * 2} height="68" rx="16" fill="#071E1E" stroke="#8BE5D5" strokeOpacity=".18" />
-            <rect x="12" y="14" width="26" height="18" rx="5" fill="#12B8A6" fillOpacity=".14" />
-            <text x="25" y="27" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="10" fill="#2EE59D">{n.step}</text>
-            <text x="46" y="28" fontFamily="Space Grotesk, sans-serif" fontSize="15" fontWeight="600" fill="#E6F4F1">{n.title}</text>
-            <text x="14" y="52" fontFamily="JetBrains Mono, monospace" fontSize="10.5" fill="#8FB3AD">{n.sub}</text>
+            <rect width={HALF * 2} height="68" rx="16" fill="#081D27" stroke="#A8E8F4" strokeOpacity=".18" />
+            <rect x="12" y="14" width="26" height="18" rx="5" fill="#3CC4DC" fillOpacity=".14" />
+            <text x="25" y="27" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="10" fill="#6FD6EA">{n.step}</text>
+            <text x="46" y="28" fontFamily="Space Grotesk, sans-serif" fontSize="15" fontWeight="600" fill="#E6F3F7">{n.title}</text>
+            <text x="14" y="52" fontFamily="JetBrains Mono, monospace" fontSize="10.5" fill="#8AA8B4">{n.sub}</text>
           </g>
         ))}
 
         {/* glowing core: the build step */}
-        <circle cx={CENTER.x} cy={CENTER.y} r={CENTER.r + 6} fill="#C6F432" opacity=".35" filter="url(#flow-glow)">
+        <circle cx={CENTER.x} cy={CENTER.y} r={CENTER.r + 6} fill="#D6F7FF" opacity=".35" filter="url(#flow-glow)">
           <animate attributeName="opacity" values=".25;.55;.25" dur="3s" repeatCount="indefinite" />
         </circle>
-        <circle cx={CENTER.x} cy={CENTER.y} r={CENTER.r + 14} fill="none" stroke="#C6F432" strokeOpacity=".25">
+        <circle cx={CENTER.x} cy={CENTER.y} r={CENTER.r + 14} fill="none" stroke="#D6F7FF" strokeOpacity=".25">
           <animate attributeName="r" values={`${CENTER.r + 6};${CENTER.r + 22};${CENTER.r + 6}`} dur="3s" repeatCount="indefinite" />
           <animate attributeName="stroke-opacity" values=".4;0;.4" dur="3s" repeatCount="indefinite" />
         </circle>
         <rect x={CENTER.x - CENTER.r} y={CENTER.y - CENTER.r} width={CENTER.r * 2} height={CENTER.r * 2} rx="26" fill="url(#flow-core)" />
-        <text x={CENTER.x} y={CENTER.y - 4} textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="10" fill="#0A2A10">04</text>
-        <text x={CENTER.x} y={CENTER.y + 15} textAnchor="middle" fontFamily="Space Grotesk, sans-serif" fontSize="17" fontWeight="700" fill="#06210F">Build</text>
+        <text x={CENTER.x} y={CENTER.y - 4} textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="10" fill="#062430">04</text>
+        <text x={CENTER.x} y={CENTER.y + 15} textAnchor="middle" fontFamily="Space Grotesk, sans-serif" fontSize="17" fontWeight="700" fill="#062430">Build</text>
       </svg>
     </div>
   )

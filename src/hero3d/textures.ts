@@ -1,9 +1,9 @@
 import * as THREE from 'three'
 
-const DEEP = '#071B1B'
-const DARK = '#0B3030'
-const AQUA = '#12B8A6'
-const MINT = '#8BE5D5'
+const DEEP = '#061C24'
+const DARK = '#0B2B36'
+const AQUA = '#3CC4DC'
+const MINT = '#A8E8F4'
 
 function canvas(w: number, h: number) {
   const c = document.createElement('canvas')
@@ -27,30 +27,30 @@ export function matTexture() {
   g.fillRect(0, 0, W, H)
   // faint mottling so it doesn't look flat/CG
   for (let i = 0; i < 2600; i++) {
-    g.fillStyle = `rgba(139,229,213,${Math.random() * 0.025})`
+    g.fillStyle = `rgba(168,232,244,${Math.random() * 0.025})`
     g.fillRect(Math.random() * W, Math.random() * H, 2 + Math.random() * 3, 2 + Math.random() * 3)
   }
   const m = 90, cell = (W - m * 2) / 40
   for (let i = 0; i <= 40; i++) {
     const x = m + i * cell
-    g.strokeStyle = i % 5 === 0 ? 'rgba(18,184,166,.55)' : 'rgba(18,184,166,.18)'
+    g.strokeStyle = i % 5 === 0 ? 'rgba(60,196,220,.55)' : 'rgba(60,196,220,.18)'
     g.lineWidth = i % 5 === 0 ? 2.2 : 1.2
     g.beginPath(); g.moveTo(x, m); g.lineTo(x, H - m); g.stroke()
   }
   const rows = Math.round((H - m * 2) / cell)
   for (let j = 0; j <= rows; j++) {
     const y = m + j * cell
-    g.strokeStyle = j % 5 === 0 ? 'rgba(18,184,166,.55)' : 'rgba(18,184,166,.18)'
+    g.strokeStyle = j % 5 === 0 ? 'rgba(60,196,220,.55)' : 'rgba(60,196,220,.18)'
     g.lineWidth = j % 5 === 0 ? 2.2 : 1.2
     g.beginPath(); g.moveTo(m, y); g.lineTo(W - m, y); g.stroke()
   }
   // diagonal guides like a real mat
-  g.strokeStyle = 'rgba(139,229,213,.12)'
+  g.strokeStyle = 'rgba(168,232,244,.12)'
   g.lineWidth = 1.5
   g.beginPath(); g.moveTo(m, H - m); g.lineTo(m + (H - m * 2), m); g.stroke()
   g.beginPath(); g.moveTo(W - m, H - m); g.lineTo(W - m - (H - m * 2), m); g.stroke()
   // ruler numbers
-  g.fillStyle = 'rgba(139,229,213,.65)'
+  g.fillStyle = 'rgba(168,232,244,.65)'
   g.font = '500 26px "JetBrains Mono", monospace'
   g.textAlign = 'center'
   for (let i = 0; i <= 40; i += 5) {
@@ -59,7 +59,7 @@ export function matTexture() {
   }
   g.textAlign = 'left'
   g.font = '600 24px "JetBrains Mono", monospace'
-  g.fillStyle = 'rgba(139,229,213,.5)'
+  g.fillStyle = 'rgba(168,232,244,.5)'
   g.fillText('JM · BUILD / MEASURE / SHIP', m, H - 22)
   return toTexture(c, 16)
 }
@@ -78,29 +78,29 @@ export function screenTexture() {
     [['  available', MINT], [': ', '#ffffff'], ['true', '#F5C97B']],
     [['}', MINT]],
     [['', '#fff']],
-    [['// ', '#4F7C76'], ['tell me what you need', '#4F7C76']],
+    [['// ', '#4E7381'], ['tell me what you need', '#4E7381']],
     [['jethro', '#ffffff'], ['.', MINT], ['build', AQUA], ['(', '#ffffff'], ['yourIdea', '#F5C97B'], [')', '#ffffff']],
   ]
   const tex = toTexture(c)
   const draw = (cursor: boolean) => {
-    g.fillStyle = '#041111'
+    g.fillStyle = '#03131A'
     g.fillRect(0, 0, W, H)
     // title bar
     g.fillStyle = DEEP
     g.fillRect(0, 0, W, 64)
-    ;['#2b4f4b', '#2b4f4b', '#2b4f4b'].forEach((col, i) => {
+    ;['#2A4B57', '#2A4B57', '#2A4B57'].forEach((col, i) => {
       g.fillStyle = col; g.beginPath(); g.arc(36 + i * 30, 32, 9, 0, Math.PI * 2); g.fill()
     })
-    g.fillStyle = 'rgba(139,229,213,.7)'
+    g.fillStyle = 'rgba(168,232,244,.7)'
     g.font = '500 24px "JetBrains Mono", monospace'
     g.fillText('jethro.ts', 150, 41)
     // sidebar
-    g.fillStyle = '#061818'
+    g.fillStyle = '#051820'
     g.fillRect(0, 64, 64, H - 64)
     g.font = '500 34px "JetBrains Mono", monospace'
     let y = 132
     lines.forEach((parts, i) => {
-      g.fillStyle = '#2f5752'
+      g.fillStyle = '#2C4F5C'
       g.fillText(String(i + 1).padStart(2, ' '), 82, y)
       let x = 150
       parts.forEach(([txt, col]) => { g.fillStyle = col; g.fillText(txt, x, y); x += g.measureText(txt).width })
@@ -123,7 +123,7 @@ export function screenTexture() {
 export function keyboardTexture() {
   const W = 1024, H = 420
   const [c, g] = canvas(W, H)
-  g.fillStyle = '#0d1f1f'
+  g.fillStyle = '#0B1D26'
   g.fillRect(0, 0, W, H)
   const rows = [14, 14, 13, 12, 9]
   const kw = 62, kh = 62, gap = 9
@@ -133,9 +133,9 @@ export function keyboardTexture() {
     for (let k = 0; k < count; k++) {
       const w = r === 4 && k === 4 ? kw * 4 + gap * 3 : kw
       if (r === 4 && k > 4) break
-      g.fillStyle = '#081515'
+      g.fillStyle = '#06151C'
       g.beginPath(); g.roundRect(x, 20 + r * (kh + gap), w, kh, 9); g.fill()
-      g.strokeStyle = 'rgba(18,184,166,.18)'; g.lineWidth = 2; g.stroke()
+      g.strokeStyle = 'rgba(60,196,220,.18)'; g.lineWidth = 2; g.stroke()
       x += w + gap
     }
   })
@@ -148,7 +148,7 @@ export function monogramTexture() {
   const [c, g] = canvas(S, S)
   g.fillStyle = AQUA
   g.fillRect(0, 0, S, S)
-  g.strokeStyle = 'rgba(7,27,27,.35)'
+  g.strokeStyle = 'rgba(6,28,36,.35)'
   g.lineWidth = 6
   g.beginPath(); g.arc(S / 2, S / 2, S * 0.4, 0, Math.PI * 2); g.stroke()
   g.fillStyle = DEEP
@@ -163,7 +163,7 @@ export function monogramTexture() {
 export function phoneTexture() {
   const W = 360, H = 720
   const [c, g] = canvas(W, H)
-  g.fillStyle = '#041111'
+  g.fillStyle = '#03131A'
   g.fillRect(0, 0, W, H)
   g.fillStyle = MINT
   g.font = '600 22px "Space Grotesk", sans-serif'
@@ -178,7 +178,7 @@ export function phoneTexture() {
   ;['Ask your AI tutor', 'Practice set', 'Review notes', 'Progress'].forEach((t, i) => {
     g.fillStyle = DARK
     g.beginPath(); g.roundRect(28, 220 + i * 92, W - 56, 74, 18); g.fill()
-    g.fillStyle = i === 0 ? AQUA : 'rgba(139,229,213,.8)'
+    g.fillStyle = i === 0 ? AQUA : 'rgba(168,232,244,.8)'
     g.font = '500 24px "Inter", sans-serif'
     g.fillText(t, 52, 265 + i * 92)
   })

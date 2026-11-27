@@ -29,16 +29,16 @@ function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div>
       <p className="text-[11px] font-medium text-deep/50">{label}</p>
-      <p className="mt-0.5 truncate font-display text-[15px] font-semibold text-[#0C8C7F]">{value}</p>
+      <p className="mt-0.5 truncate font-display text-[15px] font-semibold text-[#1E7F98]">{value}</p>
     </div>
   )
 }
 
 function CardFront({ d, onPlay, active }: { d: Demo; onPlay: () => void; active: boolean }) {
   return (
-    <div className="absolute inset-0 flex flex-col rounded-[28px] bg-[#F2F8F6] p-2.5 text-deep shadow-[0_30px_60px_-25px_rgba(0,0,0,.7)] [backface-visibility:hidden]">
+    <div className="absolute inset-0 flex flex-col rounded-[28px] bg-[#F1F6F8] p-2.5 text-deep shadow-[0_30px_60px_-25px_rgba(0,0,0,.7)] [backface-visibility:hidden]">
       <div className="relative h-[44%] overflow-hidden rounded-[22px] bg-dark">
-        <span className="absolute inset-0 grid place-items-center bg-[radial-gradient(circle_at_30%_20%,#12B8A633,transparent_60%)] font-display text-4xl font-bold text-aqua/40" aria-hidden>
+        <span className="absolute inset-0 grid place-items-center bg-[radial-gradient(circle_at_30%_20%,#3CC4DC33,transparent_60%)] font-display text-4xl font-bold text-aqua/40" aria-hidden>
           {d.title.split(' ').map((w) => w[0]).join('')}
         </span>
         <img src={thumb(d.driveId)} alt={`${d.title} screen`} loading="lazy" draggable={false}
@@ -68,7 +68,7 @@ function CardFront({ d, onPlay, active }: { d: Demo; onPlay: () => void; active:
             onClick={(e) => { e.stopPropagation(); onPlay() }}
             tabIndex={active ? 0 : -1}
             aria-label={`Play ${d.title} demo`}
-            className="grid h-12 w-12 place-items-center rounded-full bg-deep text-mint transition hover:scale-105 hover:bg-[#0C8C7F] hover:text-white"
+            className="grid h-12 w-12 place-items-center rounded-full bg-deep text-mint transition hover:scale-105 hover:bg-[#1E7F98] hover:text-white"
           >
             <Play size={18} className="translate-x-[1px] fill-current" />
           </button>

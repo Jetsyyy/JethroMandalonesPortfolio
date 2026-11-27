@@ -79,14 +79,14 @@ function CertCard({ c, style, active, onOpen, shine }: { c: Certificate; style: 
       className={`group absolute left-1/2 top-1/2 aspect-[1.414] w-[min(600px,84vw)] rounded-2xl ${active ? 'aurora-ring cursor-zoom-in' : 'pointer-events-none'}`}
       style={style}
     >
-      <span className="absolute inset-0 overflow-hidden rounded-2xl bg-[#f4f6f5] shadow-[0_40px_80px_-30px_rgba(0,0,0,.85)]">
+      <span className="absolute inset-0 overflow-hidden rounded-2xl bg-[#F3F6F8] shadow-[0_40px_80px_-30px_rgba(0,0,0,.85)]">
         <img src={thumb(c.driveId)} alt="" draggable={false} loading="lazy"
           onError={(e) => { e.currentTarget.style.display = 'none' }}
           className="h-full w-full object-cover text-transparent" />
         {/* holographic foil sweep */}
         <span aria-hidden className="pointer-events-none absolute inset-0 mix-blend-screen"
           style={{
-            background: 'linear-gradient(115deg, transparent 30%, rgba(198,244,50,.55) 44%, rgba(46,229,157,.45) 50%, rgba(34,211,238,.5) 56%, transparent 70%)',
+            background: 'linear-gradient(115deg, transparent 30%, rgba(214,247,255,.55) 44%, rgba(111,214,234,.45) 50%, rgba(76,155,196,.5) 56%, transparent 70%)',
             backgroundSize: '260% 100%',
             backgroundPosition: `${110 - shine * 120}% 0`,
             opacity: active ? 0.85 : 0.25,
@@ -173,7 +173,7 @@ export default function Certificates() {
     <section id="certificates" ref={wrap} className="relative" style={{ height: `${n * 85 + 80}vh` }}>
       <div className="sticky top-0 flex h-[100svh] flex-col overflow-hidden">
         <LightStreaks className="absolute inset-x-0 top-1/4 -z-0 h-2/3 w-full opacity-40" />
-        <div className="pointer-events-none absolute left-1/2 top-1/2 h-[60vh] w-[70vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(46,229,157,.14),transparent)] blur-2xl md:left-[62%]" />
+        <div className="pointer-events-none absolute left-1/2 top-1/2 h-[60vh] w-[70vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(111,214,234,.14),transparent)] blur-2xl md:left-[62%]" />
 
         <div className="relative mx-auto grid w-full max-w-6xl flex-1 grid-rows-[auto_1fr_auto] gap-4 px-4 pb-6 pt-24 sm:px-6 md:grid-cols-[0.85fr_1.15fr] md:grid-rows-1 md:items-center md:gap-10 md:pb-0 md:pt-20">
           {/* left: heading + live details */}

@@ -73,10 +73,10 @@ export default function AIShowcase() {
   return (
     <section id="ai" ref={wrap} className="relative mx-auto max-w-[1400px] px-3 py-16 sm:px-6 md:py-24">
       <div onPointerMove={onMove} onPointerLeave={() => (pointer.current = { x: 0, y: 0 })}
-        className="relative h-[100svh] max-h-[860px] min-h-[640px] overflow-hidden rounded-[28px] border border-mint/10 bg-[#020a0a]/80 shadow-[0_40px_120px_-40px_rgba(46,229,157,.35)]">
+        className="relative h-[100svh] max-h-[860px] min-h-[640px] overflow-hidden rounded-[28px] border border-mint/10 bg-[#020B10]/80 shadow-[0_40px_120px_-40px_rgba(111,214,234,.35)]">
         {/* HUD grid */}
-        <div aria-hidden className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(139,229,213,.05)_1px,transparent_1px),linear-gradient(90deg,rgba(139,229,213,.05)_1px,transparent_1px)] bg-[size:80px_80px]" />
-        <div aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 h-[70%] w-[50%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(46,229,157,.22),transparent)] blur-2xl" />
+        <div aria-hidden className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(168,232,244,.05)_1px,transparent_1px),linear-gradient(90deg,rgba(168,232,244,.05)_1px,transparent_1px)] bg-[size:80px_80px]" />
+        <div aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 h-[70%] w-[50%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(111,214,234,.22),transparent)] blur-2xl" />
 
         {/* robot */}
         <div className="absolute inset-x-0 bottom-[22%] top-[12%] cursor-pointer md:inset-0 md:bottom-0 md:top-0"

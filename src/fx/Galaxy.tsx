@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react'
  * Fixed "green galaxy" backdrop: twinkling starfield with scroll parallax,
  * occasional shooting stars, and slow-drifting aurora nebula clouds.
  */
-const STAR_COLORS = ['255,255,255', '139,229,213', '46,229,157', '34,211,238', '198,244,50']
+const STAR_COLORS = ['255,255,255', '168,232,244', '111,214,234', '76,155,196', '214,247,255']
 
 type Star = { x: number; y: number; r: number; depth: number; phase: number; speed: number; c: string }
 type Meteor = { x: number; y: number; vx: number; vy: number; life: number; max: number }
@@ -81,9 +81,9 @@ export default function Galaxy() {
           m.x += m.vx; m.y += m.vy; m.life++
           const fade = 1 - m.life / m.max
           const g = ctx.createLinearGradient(m.x, m.y, m.x - m.vx * 14, m.y - m.vy * 14)
-          g.addColorStop(0, `rgba(230,255,240,${fade})`)
-          g.addColorStop(0.3, `rgba(46,229,157,${fade * 0.6})`)
-          g.addColorStop(1, 'rgba(34,211,238,0)')
+          g.addColorStop(0, `rgba(230,250,255,${fade})`)
+          g.addColorStop(0.3, `rgba(111,214,234,${fade * 0.6})`)
+          g.addColorStop(1, 'rgba(76,155,196,0)')
           ctx.strokeStyle = g
           ctx.lineWidth = 1.6
           ctx.beginPath(); ctx.moveTo(m.x, m.y); ctx.lineTo(m.x - m.vx * 14, m.y - m.vy * 14); ctx.stroke()
@@ -116,13 +116,20 @@ export default function Galaxy() {
   return (
     <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden>
       {/* aurora nebula clouds */}
-      <div className="nebula absolute -left-[15vw] top-[5vh] h-[55vh] w-[60vw] rounded-full bg-[radial-gradient(closest-side,rgba(46,229,157,.16),transparent)] blur-3xl [animation:drift-a_26s_ease-in-out_infinite]" />
-      <div className="nebula absolute -right-[10vw] top-[35vh] h-[60vh] w-[55vw] rounded-full bg-[radial-gradient(closest-side,rgba(34,211,238,.13),transparent)] blur-3xl [animation:drift-b_32s_ease-in-out_infinite]" />
-      <div className="nebula absolute bottom-[-10vh] left-[20vw] h-[45vh] w-[50vw] rounded-full bg-[radial-gradient(closest-side,rgba(198,244,50,.07),transparent)] blur-3xl [animation:drift-a_38s_ease-in-out_infinite_reverse]" />
-      <div className="nebula absolute left-[35vw] top-[-15vh] h-[40vh] w-[40vw] rounded-full bg-[radial-gradient(closest-side,rgba(18,184,166,.14),transparent)] blur-3xl [animation:drift-b_30s_ease-in-out_infinite]" />
-      <canvas ref={ref} className="absolute inset-0" />
+      <div className="nebula absolute -left-[15vw] top-[5vh] h-[55vh] w-[60vw] rounded-full bg-[radial-gradient(closest-side,rgba(111,214,234,.16),transparent)] blur-3xl [animation:drift-a_26s_ease-in-out_infinite]" />
+      <div className="nebula absolute -right-[10vw] top-[35vh] h-[60vh] w-[55vw] rounded-full bg-[radial-gradient(closest-side,rgba(76,155,196,.13),transparent)] blur-3xl [animation:drift-b_32s_ease-in-out_infinite]" />
+      <div className="nebula absolute bottom-[-10vh] left-[20vw] h-[45vh] w-[50vw] rounded-full bg-[radial-gradient(closest-side,rgba(214,247,255,.07),transparent)] blur-3xl [animation:drift-a_38s_ease-in-out_infinite_reverse]" />
+      <div className="nebula absolute left-[35vw] top-[-15vh] h-[40vh] w-[40vw] rounded-full bg-[radial-gradient(closest-side,rgba(60,196,220,.14),transparent)] blur-3xl [animation:drift-b_30s_ease-in-out_infinite]" />
+      {/* smoky base: petrol-to-steel atmosphere like a misty ocean at night */}
+      <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_0%,rgba(30,90,112,.35),transparent_60%),radial-gradient(90%_60%_at_50%_110%,rgba(110,152,168,.22),transparent_70%)]" />
+      <canvas ref={ref} className="absolute inset-0 opacity-70" />
+      {/* drifting fog banks */}
+      <div className="mist absolute -left-[20vw] top-[18vh] h-[38vh] w-[90vw] rounded-[50%] bg-[radial-gradient(closest-side,rgba(168,210,224,.10),transparent)] blur-2xl [animation:fog-a_48s_ease-in-out_infinite]" />
+      <div className="mist absolute -right-[25vw] top-[52vh] h-[42vh] w-[95vw] rounded-[50%] bg-[radial-gradient(closest-side,rgba(140,190,208,.09),transparent)] blur-2xl [animation:fog-b_60s_ease-in-out_infinite]" />
+      {/* misty floor glow */}
+      <div className="absolute inset-x-0 bottom-0 h-[35vh] bg-gradient-to-t from-[rgba(120,170,188,.10)] to-transparent" />
       {/* soft vignette so content stays readable */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(3,13,13,.75))]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(3,18,26,.75))]" />
     </div>
   )
 }
