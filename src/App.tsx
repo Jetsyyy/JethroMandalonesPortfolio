@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
 import {
-  ArrowDown, ArrowRight, Award, BarChart3, Brain, Briefcase, Check, Code2, Compass,
+  ArrowRight, Award, BarChart3, Brain, Briefcase, Check, Code2, Compass,
   Database, FileText, GraduationCap, Layout, Mail, MapPin, Menu, Palette, Server,
   Smartphone, Users, Wrench, X,
 } from 'lucide-react'
@@ -9,6 +9,7 @@ import {
   projects, qualifications, services, techStack, type Project,
 } from './data'
 import DemoDeck from './DemoDeck'
+import Hero from './Hero'
 
 const NAV = [
   { id: 'services', label: 'Services' },
@@ -135,45 +136,6 @@ function Navbar() {
         </ul>
       )}
     </header>
-  )
-}
-
-/* ───────────── Hero: the pitch ───────────── */
-function Hero() {
-  return (
-    <section id="top" className="relative overflow-hidden">
-      <div className="grid-bg pointer-events-none absolute inset-0" />
-      <div className="pointer-events-none absolute -left-40 top-10 h-[460px] w-[460px] rounded-full bg-aqua/15 blur-[120px]" />
-      <div className="pointer-events-none absolute -right-40 bottom-0 h-[420px] w-[520px] rounded-full bg-mint/10 blur-[130px]" />
-      <div className="relative mx-auto flex min-h-[100svh] max-w-5xl flex-col items-center justify-center px-4 pb-20 pt-28 text-center sm:px-6">
-        <span className="glass mb-8 inline-flex items-center gap-2 !rounded-full px-4 py-2 text-sm text-mint">
-          <span className="h-2 w-2 animate-pulse rounded-full bg-aqua" /> Available for projects
-        </span>
-        <p className="mb-4 font-mono text-xs tracking-[.3em] text-muted sm:text-sm">{profile.name.toUpperCase()}</p>
-        <h1 className="font-display text-5xl font-bold leading-[1.02] tracking-tight text-white sm:text-7xl md:text-8xl">
-          {pitch.headline}
-          <span className="mt-2 block bg-gradient-to-r from-aqua via-mint to-aqua bg-clip-text text-transparent">{pitch.headlineAccent}</span>
-        </h1>
-        <p className="mt-8 max-w-2xl text-lg leading-relaxed text-muted sm:text-xl">{pitch.sub}</p>
-        <div className="mt-10 flex flex-wrap justify-center gap-3">
-          <a href="#contact" className="group inline-flex items-center gap-2 rounded-full bg-aqua px-7 py-3.5 font-medium text-deep transition hover:bg-mint">
-            Start a project <ArrowRight size={18} className="transition group-hover:translate-x-1" />
-          </a>
-          <a href="#projects" className="inline-flex items-center gap-2 rounded-full border border-mint/25 bg-dark/60 px-7 py-3.5 font-medium text-ink transition hover:border-aqua/60">
-            See my work
-          </a>
-        </div>
-        <ul className="mt-14 flex flex-wrap justify-center gap-x-8 gap-y-3 font-mono text-xs text-muted">
-          {['IEEE APWiMob 2025 author', "Top 6 Dean's Lister", '486 OJT hours', 'Laravel · React · AI'].map((t) => (
-            <li key={t} className="flex items-center gap-2"><Check size={14} className="text-aqua" />{t}</li>
-          ))}
-        </ul>
-      </div>
-      <a href="#services" className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 md:flex" aria-label="Scroll to services">
-        <span className="h-10 w-px bg-gradient-to-b from-transparent to-aqua" />
-        <ArrowDown size={16} className="animate-bounce text-aqua" />
-      </a>
-    </section>
   )
 }
 
