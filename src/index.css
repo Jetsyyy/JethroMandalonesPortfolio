@@ -164,3 +164,14 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .accent, .aurora-ring::before, .streak-flow, .nebula { animation: none !important; }
 }
+
+/* ── Creative section: cinematic line reveal + popping image pills ── */
+.line-rise { transform: translateY(105%) rotate(3deg); transform-origin: 0 100%; transition: transform 1s cubic-bezier(.19,1,.22,1); }
+.reveal-lines.in .line-rise { transform: none; }
+.pill-pop { transform: scale(0) rotate(-12deg); transition: transform .8s cubic-bezier(.34,1.56,.64,1); }
+.reveal-lines.in .pill-pop { transform: none; }
+.line-fade { opacity: 0; transform: translateY(16px); transition: opacity .8s ease, transform .8s ease; }
+.reveal-lines.in .line-fade { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .line-rise, .pill-pop, .line-fade { transform: none !important; opacity: 1 !important; transition: none !important; }
+}

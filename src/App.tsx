@@ -15,6 +15,7 @@ import FlowDiagram from './fx/FlowDiagram'
 import useSpotlight from './fx/useSpotlight'
 import Hero from './Hero'
 import Certificates from './Certificates'
+import { CreativeIntro, CreativeReel } from './Creative'
 
 const NAV = [
   { id: 'services', label: 'Services' },
@@ -23,6 +24,7 @@ const NAV = [
   { id: 'experience', label: 'Experience' },
   { id: 'demos', label: 'Demos' },
   { id: 'projects', label: 'Work' },
+  { id: 'creative', label: 'Creative' },
   { id: 'leadership', label: 'Leadership' },
   { id: 'certificates', label: 'Certs' },
 ]
@@ -33,6 +35,7 @@ const STACK_ICONS: Record<string, ReactNode> = {
   Database: <Database size={18} />,
   'AI Integration': <Brain size={18} />,
   Mobile: <Smartphone size={18} />,
+  Creative: <Palette size={18} />,
   Tools: <Wrench size={18} />,
 }
 
@@ -642,6 +645,8 @@ export default function App() {
         <Experience />
         <Demos />
         <Projects />
+        <CreativeIntro />
+        <CreativeReel />
         <Leadership />
         <Certificates />
         <BuildBand />

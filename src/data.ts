@@ -110,10 +110,10 @@ export const services: Service[] = [
   },
   {
     key: 'design',
-    title: 'Design',
-    tag: 'UI prototyping & graphics',
-    body: 'Clean, responsive interfaces prototyped in Figma, plus promotional graphics that match.',
-    deliverables: ['Figma prototypes', 'Responsive layouts', 'Pubmats & social assets'],
+    title: 'Design & Edit',
+    tag: 'Graphics, video & UI',
+    body: 'Scroll-stopping pubmats, branded social posts and short video edits, plus UI prototypes that match.',
+    deliverables: ['Canva pubmats & social series', 'CapCut video edits', 'Figma UI prototypes'],
   },
   {
     key: 'plan',
@@ -228,7 +228,8 @@ export const techStack = [
   { group: 'Database', items: ['MySQL', 'PostgreSQL', 'Firebase', 'Supabase'] },
   { group: 'AI Integration', items: ['OpenAI API', 'Azure AI', 'Retell AI'] },
   { group: 'Mobile', items: ['Flutter'] },
-  { group: 'Tools', items: ['Git', 'GitHub', 'VS Code', 'Figma', 'Vercel'] },
+  { group: 'Creative', items: ['Canva', 'CapCut', 'Figma'] },
+  { group: 'Tools', items: ['Git', 'GitHub', 'VS Code', 'Vercel'] },
 ]
 
 export type Project = {
@@ -358,3 +359,42 @@ export const leadership = [
 
 export const leadershipSummary =
   'Coordinated between faculty and students and led initiatives reaching 300+ Information Systems students.'
+
+// Graphics & video edits hosted in Google Drive ("My works | Canva Edits", anyone-with-link).
+export type CreativeWork = {
+  driveId: string
+  title: string
+  group: 'Campus' | 'Client' | 'Video'
+  tool: string
+  ratio: 'wide' | 'post' // 16:9 or 4:5
+}
+
+const campus = (driveId: string, title: string): CreativeWork => ({ driveId, title, group: 'Campus', tool: 'Canva', ratio: 'wide' })
+const sudsies = (driveId: string, title: string): CreativeWork => ({ driveId, title, group: 'Client', tool: 'Canva', ratio: 'post' })
+
+export const creativeWorks: CreativeWork[] = [
+  { driveId: '12ixbMswqs06qwjvPzecRYaHm1vK0RMiJ', title: 'Verdecana', group: 'Video', tool: 'CapCut · Canva', ratio: 'wide' },
+  campus('1ZxUDGWX_kndeEAte62gcFa_jt-eU1MQT', 'FORGE · Event pubmat'),
+  sudsies('1HsNWp6B9_wGA9yqZj56k8Q11KXqzVCuF', 'Sudsies · Yachts & machines'),
+  campus('1iT5BkjpOMI10z12GIGVdVK3FkzVO3l0G', 'ASCEND 2025'),
+  sudsies('1CSPku_6KGNJe-61p5Gqv0Qhh0XgKZiv1', 'Sudsies · Couture-level cleaning'),
+  campus('1kAMadtYP_z6_gdDD3ZHmy1IWegkGVvUv', 'Balik Eskwela'),
+  { driveId: '1PE-XbPVesUmJgcSwcfhKoxBEz6q7QsS7', title: 'Product promo · Order now', group: 'Client', tool: 'Canva', ratio: 'wide' },
+  sudsies('1lV2Dm1HCG4M87hRNrZSdFtjZEMYkpIug', 'Sudsies · Workmanship'),
+  campus('13ZcG5RqkAEV4T3tqzmW9D20L0ckgLKj5', 'FORGE · Highlights'),
+  sudsies('1oDt7AmD3cKBwAJ1YL48s0HG0C0-N_VaG', 'Sudsies · Preserving elegance'),
+  campus('1lFG-wLqCJ-qYzJssJ7Aazkxf-C5G8rxB', 'Certificate design'),
+  sudsies('1a7jKBUxb3QK_fU7x-u6p_GqWg2GPkmBd', 'Sudsies · Eco-friendly dry cleaners'),
+  sudsies('1hCTYyQ7sDiauy1KTJvAFVEP64TI85b-I', 'Sudsies · Leisure & marine'),
+  campus('1e9XTgu1dppraj77U8-9DVg2abFzgVzz_', 'ASCEND 2025 · Recap'),
+  sudsies('18NW6QdNJVZ2baINNAcLg5w4ZAXdcHlkM', 'Sudsies · Wedding dress care'),
+  sudsies('1QcYVo3Ozzqfhk38c8U5J670tJFAtW9jy', 'Sudsies · Luxury care, delivered'),
+  campus('1Kuf4GfRkGU2-UrGIV7TNp3CFVYwhuhvf', 'Midterm Exam pubmat'),
+  sudsies('1BudqMGaB8f9KJ2bMlgcglbRNJtxhUXUW', 'Sudsies · Exceptional garments'),
+  sudsies('11obvisFpNmpidVsEk8UqMJfDbrAybBxi', 'Sudsies · Hand-finished luxury'),
+  campus('1IoK3lvwm_h91mKeEfl5rCzp7YoDXDuCZ', 'Balik Eskwela · Kit'),
+  sudsies('1tG_zLWUiB9q3fHPDYCOLy-PqBo31665_', 'Sudsies · Couture care'),
+  sudsies('1Vnlx7zfqswTXuR7miaytEb9R1MX9iiQA', 'Sudsies · Expert care for every detail'),
+  sudsies('1OxvdCjC__mIA_0c8pnt_KbhGkh_PiXeV', 'Sudsies · Dry cleaning experience'),
+  sudsies('1qqi0tZLcHV0TkZIzcwFK1DHrI0Qukz5U', 'Sudsies · Steam finishing'),
+]
