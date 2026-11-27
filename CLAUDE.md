@@ -8,7 +8,9 @@ React + Vite + TypeScript + Tailwind v4. Content: `src/data.ts`. Brand tokens: `
 - **Never use purple** or the typical purple-gradient dev-portfolio look.
 
 ## Section order
-Hero (Full-Stack Developer / AI Integration) → About → Qualifications & Education → Technical Skills → Professional Experience → Featured Projects → Leadership & Achievements → Contact
+Hero (sales pitch) → Services ("What I do") → About → Qualifications & Education → Technical Skills → Professional Experience → Featured Projects (tabbed showcase) → Leadership & Achievements → "I build ___" band → Contact ("Have something to build?" + Let's talk)
+
+The site is positioned as **selling Jethro's skills** to clients/employers, not just a résumé. Layout was inspired by a reference reel, but keep the copy and visuals original and teal.
 
 ## Experience accuracy
 Keep the OJT (Alexa's Engineering Services), freelance work, and the Gallagher's Resource short-term engagement as **separate** entries. Don't present them as ongoing or full-time employment.

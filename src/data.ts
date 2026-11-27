@@ -15,6 +15,62 @@ export const profile = {
   resume: '#', // e.g. '/resume.pdf' after adding it to /public
 }
 
+// The sales pitch: what clients can hire you for.
+export const pitch = {
+  headline: 'Full-stack systems',
+  headlineAccent: 'with a business analyst’s mind.',
+  sub: 'I design, build and ship web apps, AI tools and analytics systems, and I make sure each one solves a real business problem.',
+  buildWords: ['web apps', 'AI tools', 'dashboards', 'voice agents', 'mobile apps', 'inventory systems'],
+  availability: 'Available for freelance and full-time work, for clients in the Philippines and abroad.',
+}
+
+export type Service = { key: string; title: string; tag: string; body: string; deliverables: string[] }
+
+export const services: Service[] = [
+  {
+    key: 'build',
+    title: 'Build',
+    tag: 'Web & system development',
+    body: 'Custom web applications and information systems, from database design to deployment.',
+    deliverables: ['Laravel / PHP systems', 'React & Next.js front-ends', 'REST APIs & auth'],
+  },
+  {
+    key: 'ai',
+    title: 'Integrate AI',
+    tag: 'AI features & voice agents',
+    body: 'Practical AI inside your product: chat, speech, tutoring and automated phone agents.',
+    deliverables: ['OpenAI & Azure AI', 'Retell AI voice agents', 'Prompt & flow design'],
+  },
+  {
+    key: 'analyze',
+    title: 'Analyze',
+    tag: 'Dashboards & forecasting',
+    body: 'Turn operational data into decisions with dashboards, reports and demand forecasting.',
+    deliverables: ['Predictive analytics', 'Inventory forecasting', 'KPI dashboards'],
+  },
+  {
+    key: 'mobile',
+    title: 'Go mobile',
+    tag: 'Cross-platform apps',
+    body: 'Android and iOS apps from a single Flutter codebase, backed by a real API.',
+    deliverables: ['Flutter + Riverpod', 'Firebase / PostgreSQL', 'Node.js backends'],
+  },
+  {
+    key: 'design',
+    title: 'Design',
+    tag: 'UI prototyping & graphics',
+    body: 'Clean, responsive interfaces prototyped in Figma, plus promotional graphics that match.',
+    deliverables: ['Figma prototypes', 'Responsive layouts', 'Pubmats & social assets'],
+  },
+  {
+    key: 'plan',
+    title: 'Plan',
+    tag: 'Systems analysis',
+    body: 'Requirements gathering and process modelling, so the right system gets built.',
+    deliverables: ['Requirements & scope', 'Process & data models', 'Client coordination'],
+  },
+]
+
 export const about = {
   paragraphs: [
     "I'm an Information Systems graduate majoring in Business Analytics at Pamantasan ng Lungsod ng San Pablo. I work at the point where software engineering meets business needs: I understand how a system is built and why an organization needs it.",
@@ -81,6 +137,7 @@ export type Project = {
   badge?: string
   featured?: boolean
   link?: string
+  mock: 'analytics' | 'chat' | 'mobile' | 'web'
 }
 
 export const projects: Project[] = [
@@ -91,6 +148,7 @@ export const projects: Project[] = [
     description:
       'A web-based system that forecasts inventory demand and surfaces predictive insights so the business can plan production and cut waste.',
     tech: ['Laravel', 'PHP', 'MySQL', 'Analytics'],
+    mock: 'analytics',
     featured: true,
   },
   {
@@ -100,6 +158,7 @@ export const projects: Project[] = [
     description:
       'Helps users build speaking confidence with AI-driven conversation practice, pronunciation feedback and progress tracking.',
     tech: ['React', 'Node.js', 'OpenAI', 'Azure AI', 'Firebase'],
+    mock: 'chat',
     badge: 'IEEE APWiMob 2025',
     featured: true,
   },
@@ -109,6 +168,7 @@ export const projects: Project[] = [
     role: 'Developer',
     description: 'A mobile tutoring companion that gives learners personalised, AI-guided study help.',
     tech: ['Flutter', 'Riverpod', 'Node.js', 'PostgreSQL'],
+    mock: 'mobile',
   },
   {
     title: 'eKalinga',
@@ -116,6 +176,7 @@ export const projects: Project[] = [
     role: 'Developer',
     description: 'A Laravel-based platform for PLSP that promotes mental health awareness and connects students to support.',
     tech: ['Laravel', 'Blade', 'MySQL'],
+    mock: 'web',
   },
   {
     title: 'E-Athleta',
@@ -123,6 +184,7 @@ export const projects: Project[] = [
     role: 'System Analyst',
     description: 'An information system for managing athlete records and data, from requirements analysis through system design.',
     tech: ['Systems Analysis', 'Web'],
+    mock: 'web',
   },
 ]
 

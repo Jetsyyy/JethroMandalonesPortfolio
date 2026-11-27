@@ -1,22 +1,21 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
 import {
-  ArrowDown, ArrowRight, Award, BarChart3, Brain, Briefcase, Code2, Database,
-  FileText, GraduationCap, Layout, Mail, MapPin, Menu, Server, Smartphone,
-  Sparkles, Users, Wrench, X,
+  ArrowDown, ArrowRight, Award, BarChart3, Brain, Briefcase, Check, Code2, Compass,
+  Database, FileText, GraduationCap, Layout, Mail, MapPin, Menu, Palette, Server,
+  Smartphone, Users, Wrench, X,
 } from 'lucide-react'
 import {
-  about, education, experience, leadership, leadershipSummary, profile,
-  projects, qualifications, techStack,
+  about, education, experience, leadership, leadershipSummary, pitch, profile,
+  projects, qualifications, services, techStack, type Project,
 } from './data'
 
 const NAV = [
+  { id: 'services', label: 'Services' },
   { id: 'about', label: 'About' },
-  { id: 'qualifications', label: 'Qualifications' },
   { id: 'stack', label: 'Skills' },
   { id: 'experience', label: 'Experience' },
-  { id: 'projects', label: 'Projects' },
+  { id: 'projects', label: 'Work' },
   { id: 'leadership', label: 'Leadership' },
-  { id: 'contact', label: 'Contact' },
 ]
 
 const STACK_ICONS: Record<string, ReactNode> = {
@@ -26,6 +25,15 @@ const STACK_ICONS: Record<string, ReactNode> = {
   'AI Integration': <Brain size={18} />,
   Mobile: <Smartphone size={18} />,
   Tools: <Wrench size={18} />,
+}
+
+const SERVICE_ICONS: Record<string, ReactNode> = {
+  build: <Code2 />,
+  ai: <Brain />,
+  analyze: <BarChart3 />,
+  mobile: <Smartphone />,
+  design: <Palette />,
+  plan: <Compass />,
 }
 
 /* Brand icons (inline so they never depend on an icon library version) */
@@ -52,24 +60,33 @@ function useReveal() {
   }, [])
 }
 
-function useRotatingWord(words: string[], ms = 2600) {
+function useCycle(length: number, ms = 2400) {
   const [i, setI] = useState(0)
   useEffect(() => {
-    const t = setInterval(() => setI((n) => (n + 1) % words.length), ms)
+    const t = setInterval(() => setI((n) => (n + 1) % length), ms)
     return () => clearInterval(t)
-  }, [words.length, ms])
+  }, [length, ms])
   return i
 }
 
-function Section({ id, eyebrow, title, children }: { id: string; eyebrow: string; title: string; children: ReactNode }) {
+function Section({ id, eyebrow, title, intro, children }: { id: string; eyebrow: string; title: ReactNode; intro?: string; children: ReactNode }) {
   return (
     <section id={id} className="mx-auto max-w-6xl px-4 py-20 sm:px-6 md:py-28">
-      <div className="reveal mb-12">
+      <div className="reveal mb-12 max-w-2xl">
         <p className="eyebrow mb-3">{eyebrow}</p>
-        <h2 className="font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">{title}</h2>
+        <h2 className="font-display text-3xl font-semibold tracking-tight text-white sm:text-5xl">{title}</h2>
+        {intro && <p className="mt-4 text-lg leading-relaxed text-muted">{intro}</p>}
       </div>
       {children}
     </section>
+  )
+}
+
+function Logo() {
+  return (
+    <span className="grid h-9 w-9 place-items-center rounded-xl border border-aqua/50 bg-dark font-display text-sm font-bold text-aqua">
+      <span>J<span className="text-mint">M</span></span>
+    </span>
   )
 }
 
@@ -87,9 +104,7 @@ function Navbar() {
     <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${scrolled ? 'py-2' : 'py-4'}`}>
       <nav className={`mx-auto flex max-w-6xl items-center justify-between px-4 sm:px-6 ${scrolled ? 'glass !rounded-2xl mx-3 sm:mx-auto py-2.5 shadow-lg shadow-black/30' : ''}`}>
         <a href="#top" className="flex items-center gap-2.5" aria-label="Home">
-          <span className="grid h-9 w-9 place-items-center rounded-xl border border-aqua/50 bg-dark font-display text-sm font-bold text-aqua">
-            J<span className="text-mint">M</span>
-          </span>
+          <Logo />
           <span className="hidden font-display font-semibold text-white sm:inline">Jethro M.</span>
         </a>
         <ul className="hidden items-center gap-1 lg:flex">
@@ -100,7 +115,9 @@ function Navbar() {
           ))}
         </ul>
         <div className="flex items-center gap-2">
-          <a href="#contact" className="hidden rounded-lg border border-aqua/60 px-4 py-2 text-sm text-mint transition hover:bg-aqua/10 sm:inline-block">Let's talk</a>
+          <a href="#contact" className="hidden items-center gap-1.5 rounded-full bg-aqua px-4 py-2 text-sm font-medium text-deep transition hover:bg-mint sm:inline-flex">
+            Hire me <ArrowRight size={15} />
+          </a>
           <button onClick={() => setOpen(!open)} className="grid h-10 w-10 place-items-center rounded-lg text-mint lg:hidden" aria-label="Toggle menu" aria-expanded={open}>
             {open ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -108,7 +125,7 @@ function Navbar() {
       </nav>
       {open && (
         <ul className="glass mx-3 mt-2 flex flex-col p-2 lg:hidden">
-          {NAV.map((n) => (
+          {[...NAV, { id: 'contact', label: 'Hire me' }].map((n) => (
             <li key={n.id}>
               <a href={`#${n.id}`} onClick={() => setOpen(false)} className="block rounded-lg px-4 py-3 text-muted hover:bg-aqua/10 hover:text-mint">{n.label}</a>
             </li>
@@ -119,90 +136,38 @@ function Navbar() {
   )
 }
 
-function OrbitArt() {
-  // Concentric teal rings with orbiting nodes: a quiet, technical hero visual
-  const rings = [70, 105, 140, 175]
-  return (
-    <div className="relative mx-auto aspect-square w-full max-w-[440px]" aria-hidden="true">
-      <div className="absolute inset-[18%] rounded-full bg-aqua/25 blur-3xl" />
-      <svg viewBox="-200 -200 400 400" className="animate-spin-slow absolute inset-0 h-full w-full">
-        {rings.map((r, i) => (
-          <g key={r}>
-            <circle r={r} fill="none" stroke="#12B8A6" strokeOpacity={0.14 + i * 0.06} strokeDasharray={i % 2 ? '2 6' : undefined} />
-            <circle cx={r * Math.cos(i * 1.7)} cy={r * Math.sin(i * 1.7)} r={i === 3 ? 5 : 3.5} fill={i % 2 ? '#8BE5D5' : '#12B8A6'} />
-          </g>
-        ))}
-        <ellipse rx="175" ry="60" fill="none" stroke="#8BE5D5" strokeOpacity=".18" transform="rotate(-25)" />
-        <ellipse rx="175" ry="60" fill="none" stroke="#12B8A6" strokeOpacity=".18" transform="rotate(35)" />
-      </svg>
-      <div className="animate-float absolute inset-[30%] grid place-items-center rounded-full border border-aqua/40 bg-dark/80 backdrop-blur">
-        <span className="font-display text-5xl font-bold text-aqua sm:text-6xl">J<span className="text-mint">M</span></span>
-      </div>
-      {['React', 'Laravel', 'OpenAI', 'Flutter'].map((t, i) => (
-        <span
-          key={t}
-          className="glass absolute !rounded-full px-3 py-1.5 font-mono text-xs text-mint"
-          style={[{ top: '6%', left: '8%' }, { top: '18%', right: '0%' }, { bottom: '14%', left: '0%' }, { bottom: '4%', right: '10%' }][i]}
-        >
-          {t}
-        </span>
-      ))}
-    </div>
-  )
-}
-
+/* ───────────── Hero: the pitch ───────────── */
 function Hero() {
-  const i = useRotatingWord(profile.roles)
   return (
     <section id="top" className="relative overflow-hidden">
       <div className="grid-bg pointer-events-none absolute inset-0" />
-      <div className="pointer-events-none absolute -top-40 left-1/2 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-aqua/10 blur-[120px]" />
-      <div className="relative mx-auto grid min-h-[100svh] max-w-6xl items-center gap-12 px-4 pb-16 pt-28 sm:px-6 md:grid-cols-[1.15fr_1fr]">
-        <div>
-          <p className="eyebrow mb-5 flex items-center gap-2">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-aqua" /> Open to opportunities
-          </p>
-          <p className="mb-3 font-mono text-sm tracking-widest text-muted">HI, I'M {profile.name.toUpperCase()}</p>
-          <h1 className="font-display text-4xl font-bold leading-[1.08] tracking-tight text-white sm:text-6xl">
-            Aspiring
-            <span className="relative block h-[1.15em] overflow-hidden">
-              {profile.roles.map((r, n) => (
-                <span
-                  key={r}
-                  className="absolute left-0 top-0 whitespace-nowrap bg-gradient-to-r from-aqua to-mint bg-clip-text text-transparent transition-all duration-700"
-                  style={{ transform: `translateY(${(n - i) * 100}%)`, opacity: n === i ? 1 : 0 }}
-                >
-                  {r}
-                </span>
-              ))}
-            </span>
-          </h1>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted">{profile.tagline}</p>
-          <p className="mt-4 flex items-center gap-2 text-sm text-muted"><MapPin size={16} className="text-aqua" /> {profile.location}</p>
-          <div className="mt-9 flex flex-wrap gap-3">
-            <a href="#projects" className="group inline-flex items-center gap-2 rounded-xl bg-aqua px-5 py-3 font-medium text-deep transition hover:bg-mint">
-              View my work <ArrowRight size={18} className="transition group-hover:translate-x-1" />
-            </a>
-            <a href={profile.resume} className="inline-flex items-center gap-2 rounded-xl border border-mint/25 bg-dark/60 px-5 py-3 font-medium text-ink transition hover:border-aqua/60">
-              <FileText size={18} /> Resume
-            </a>
-          </div>
-          <div className="mt-8 flex gap-3">
-            {[
-              { href: profile.github, label: 'GitHub', icon: <GithubIcon /> },
-              { href: profile.linkedin, label: 'LinkedIn', icon: <LinkedinIcon /> },
-              { href: `mailto:${profile.email}`, label: 'Email', icon: <Mail size={18} /> },
-            ].map((s) => (
-              <a key={s.label} href={s.href} aria-label={s.label} target={s.href.startsWith('http') ? '_blank' : undefined} rel="noreferrer"
-                className="grid h-11 w-11 place-items-center rounded-xl border border-mint/15 text-muted transition hover:border-aqua/60 hover:text-mint">
-                {s.icon}
-              </a>
-            ))}
-          </div>
+      <div className="pointer-events-none absolute -left-40 top-10 h-[460px] w-[460px] rounded-full bg-aqua/15 blur-[120px]" />
+      <div className="pointer-events-none absolute -right-40 bottom-0 h-[420px] w-[520px] rounded-full bg-mint/10 blur-[130px]" />
+      <div className="relative mx-auto flex min-h-[100svh] max-w-5xl flex-col items-center justify-center px-4 pb-20 pt-28 text-center sm:px-6">
+        <span className="glass mb-8 inline-flex items-center gap-2 !rounded-full px-4 py-2 text-sm text-mint">
+          <span className="h-2 w-2 animate-pulse rounded-full bg-aqua" /> Available for projects
+        </span>
+        <p className="mb-4 font-mono text-xs tracking-[.3em] text-muted sm:text-sm">{profile.name.toUpperCase()}</p>
+        <h1 className="font-display text-5xl font-bold leading-[1.02] tracking-tight text-white sm:text-7xl md:text-8xl">
+          {pitch.headline}
+          <span className="mt-2 block bg-gradient-to-r from-aqua via-mint to-aqua bg-clip-text text-transparent">{pitch.headlineAccent}</span>
+        </h1>
+        <p className="mt-8 max-w-2xl text-lg leading-relaxed text-muted sm:text-xl">{pitch.sub}</p>
+        <div className="mt-10 flex flex-wrap justify-center gap-3">
+          <a href="#contact" className="group inline-flex items-center gap-2 rounded-full bg-aqua px-7 py-3.5 font-medium text-deep transition hover:bg-mint">
+            Start a project <ArrowRight size={18} className="transition group-hover:translate-x-1" />
+          </a>
+          <a href="#projects" className="inline-flex items-center gap-2 rounded-full border border-mint/25 bg-dark/60 px-7 py-3.5 font-medium text-ink transition hover:border-aqua/60">
+            See my work
+          </a>
         </div>
-        <OrbitArt />
+        <ul className="mt-14 flex flex-wrap justify-center gap-x-8 gap-y-3 font-mono text-xs text-muted">
+          {['IEEE APWiMob 2025 author', "Top 6 Dean's Lister", '486 OJT hours', 'Laravel · React · AI'].map((t) => (
+            <li key={t} className="flex items-center gap-2"><Check size={14} className="text-aqua" />{t}</li>
+          ))}
+        </ul>
       </div>
-      <a href="#about" className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-xs text-muted md:flex" aria-label="Scroll to About">
+      <a href="#services" className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 md:flex" aria-label="Scroll to services">
         <span className="h-10 w-px bg-gradient-to-b from-transparent to-aqua" />
         <ArrowDown size={16} className="animate-bounce text-aqua" />
       </a>
@@ -210,9 +175,43 @@ function Hero() {
   )
 }
 
+/* ───────────── Services: what you can hire me for ───────────── */
+function Services() {
+  return (
+    <Section
+      id="services"
+      eyebrow="What I do"
+      title={<>Built to work. <span className="text-aqua">Designed to sell.</span></>}
+      intro="One developer who can take a project from requirements to a launched product. Pick what you need."
+    >
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {services.map((s, n) => (
+          <article key={s.key} className="reveal glass glass-hover group relative overflow-hidden p-7" style={{ transitionDelay: `${n * 60}ms` }}>
+            <div className="pointer-events-none absolute -right-12 -top-12 h-36 w-36 rounded-full bg-aqua/0 blur-3xl transition duration-500 group-hover:bg-aqua/20" />
+            <div className="mb-6 flex items-start justify-between">
+              <div className="grid h-14 w-14 place-items-center rounded-2xl border border-aqua/30 bg-gradient-to-br from-aqua/25 to-dark text-mint [&>svg]:h-6 [&>svg]:w-6">
+                {SERVICE_ICONS[s.key]}
+              </div>
+              <span className="font-mono text-xs text-muted">0{n + 1}</span>
+            </div>
+            <h3 className="font-display text-2xl font-semibold text-white">{s.title}</h3>
+            <p className="mt-1 font-mono text-xs uppercase tracking-wider text-aqua">{s.tag}</p>
+            <p className="mt-4 leading-relaxed text-muted">{s.body}</p>
+            <ul className="mt-5 space-y-2 border-t border-mint/10 pt-4">
+              {s.deliverables.map((d) => (
+                <li key={d} className="flex items-center gap-2.5 text-sm text-ink"><Check size={15} className="shrink-0 text-aqua" />{d}</li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </Section>
+  )
+}
+
 function About() {
   return (
-    <Section id="about" eyebrow="01 · About me" title="Where code meets business">
+    <Section id="about" eyebrow="About me" title="Where code meets business">
       <div className="grid gap-6 md:grid-cols-[1.4fr_1fr]">
         <div className="reveal glass p-7 sm:p-9">
           {about.paragraphs.map((p) => <p key={p} className="mb-4 leading-relaxed text-muted last:mb-0">{p}</p>)}
@@ -243,7 +242,7 @@ function About() {
 function Qualifications() {
   const icons = [<Code2 />, <Brain />, <BarChart3 />, <Layout />, <FileText />, <Users />]
   return (
-    <Section id="qualifications" eyebrow="02 · Qualifications & education" title="What I bring to a team">
+    <Section id="qualifications" eyebrow="Qualifications & education" title="What I bring to a team">
       <div className="reveal glass relative mb-5 grid gap-6 overflow-hidden p-7 sm:p-8 md:grid-cols-[auto_1fr_auto] md:items-center">
         <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-aqua/15 blur-3xl" />
         <div className="grid h-14 w-14 place-items-center rounded-2xl bg-aqua/10 text-aqua"><GraduationCap size={28} /></div>
@@ -270,10 +269,39 @@ function Qualifications() {
   )
 }
 
-function Stack() {
+/* ───────────── Skills: marquee + grouped grid ───────────── */
+function Marquee({ items, reverse }: { items: string[]; reverse?: boolean }) {
+  const loop = [...items, ...items]
   return (
-    <Section id="stack" eyebrow="03 · Technical skills" title="Tools I build with">
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="marquee overflow-hidden py-1.5">
+      <div className={`marquee-track ${reverse ? 'reverse' : ''}`}>
+        {loop.map((t, n) => (
+          <span key={t + n} aria-hidden={n >= items.length} className="glass inline-flex items-center gap-2 whitespace-nowrap !rounded-full px-5 py-2.5 text-sm text-ink">
+            <span className="h-1.5 w-1.5 rounded-full bg-aqua" />{t}
+          </span>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function Stack() {
+  const all = techStack.flatMap((g) => g.items)
+  const half = Math.ceil(all.length / 2)
+  return (
+    <section id="stack" className="py-20 md:py-28">
+      <div className="reveal mx-auto mb-12 max-w-6xl px-4 text-center sm:px-6">
+        <p className="eyebrow mb-3">Technical skills</p>
+        <h2 className="font-display text-4xl font-bold tracking-tight text-white sm:text-6xl">
+          From database <span className="text-aqua">to dashboard.</span>
+        </h2>
+        <p className="mx-auto mt-4 max-w-xl text-lg text-muted">Backend, frontend, AI and mobile, all handled by one person, so nothing gets lost between teams.</p>
+      </div>
+      <div className="reveal space-y-3">
+        <Marquee items={all.slice(0, half)} />
+        <Marquee items={all.slice(half)} reverse />
+      </div>
+      <div className="mx-auto mt-14 grid max-w-6xl gap-5 px-4 sm:grid-cols-2 sm:px-6 lg:grid-cols-3">
         {techStack.map((g) => (
           <div key={g.group} className="reveal glass glass-hover p-6">
             <div className="mb-4 flex items-center gap-2.5 text-aqua">
@@ -288,38 +316,13 @@ function Stack() {
           </div>
         ))}
       </div>
-    </Section>
-  )
-}
-
-function Projects() {
-  return (
-    <Section id="projects" eyebrow="05 · Featured projects" title="Systems I've built">
-      <div className="grid gap-5 md:grid-cols-2">
-        {projects.map((p) => (
-          <article key={p.title} className={`reveal glass glass-hover relative flex flex-col overflow-hidden p-7 ${p.featured ? 'md:min-h-[300px]' : ''}`}>
-            {p.featured && <div className="pointer-events-none absolute -right-16 -top-16 h-44 w-44 rounded-full bg-aqua/15 blur-3xl" />}
-            <div className="mb-4 flex flex-wrap items-center gap-2">
-              {p.featured && <span className="chip !text-deep !bg-aqua !border-aqua">Featured</span>}
-              {p.badge && <span className="chip inline-flex items-center gap-1"><Award size={12} /> {p.badge}</span>}
-            </div>
-            <h3 className="font-display text-2xl font-semibold text-white">{p.title}</h3>
-            <p className="mt-1 text-mint">{p.kind}</p>
-            <p className="mt-4 flex-1 leading-relaxed text-muted">{p.description}</p>
-            <p className="mt-5 flex items-center gap-2 font-mono text-xs text-muted"><Briefcase size={14} className="text-aqua" /> {p.role}</p>
-            <div className="mt-4 flex flex-wrap gap-2 border-t border-mint/10 pt-4">
-              {p.tech.map((t) => <span key={t} className="chip">{t}</span>)}
-            </div>
-          </article>
-        ))}
-      </div>
-    </Section>
+    </section>
   )
 }
 
 function Experience() {
   return (
-    <Section id="experience" eyebrow="04 · Professional experience" title="Where I've worked">
+    <Section id="experience" eyebrow="Professional experience" title="Where I've worked">
       <ol className="relative ml-3 border-l border-aqua/25">
         {experience.map((e) => (
           <li key={e.role + e.org} className="reveal relative mb-8 pl-8 last:mb-0">
@@ -354,11 +357,128 @@ function Experience() {
   )
 }
 
+/* ───────────── Work: tabbed showcase in a browser frame ───────────── */
+function ProjectMock({ kind }: { kind: Project['mock'] }) {
+  if (kind === 'analytics') {
+    const bars = [38, 52, 45, 63, 58, 74, 69, 86]
+    return (
+      <div className="flex h-full flex-col gap-3">
+        <div className="grid grid-cols-3 gap-3">
+          {['Stock levels', '30-day forecast', 'Reorder alerts'].map((l, i) => (
+            <div key={l} className="rounded-lg border border-mint/10 bg-deep/70 p-3">
+              <p className="text-[10px] text-muted">{l}</p>
+              <span className="mt-2 block h-3 rounded bg-mint/30" style={{ width: `${[70, 55, 40][i]}%` }} />
+            </div>
+          ))}
+        </div>
+        <div className="flex flex-1 items-end gap-2 rounded-lg border border-mint/10 bg-deep/70 p-4">
+          {bars.map((h, i) => (
+            <div key={i} className={`flex-1 rounded-t ${i > 5 ? 'border border-dashed border-mint/60 bg-mint/15' : 'bg-gradient-to-t from-aqua/40 to-aqua'}`} style={{ height: `${h}%` }} />
+          ))}
+        </div>
+      </div>
+    )
+  }
+  if (kind === 'chat') {
+    return (
+      <div className="flex h-full flex-col justify-end gap-3">
+        <div className="max-w-[75%] rounded-2xl rounded-bl-sm bg-dark px-4 py-2.5 text-sm text-ink">Let's practise a job interview. Tell me about yourself.</div>
+        <div className="ml-auto max-w-[75%] rounded-2xl rounded-br-sm bg-aqua px-4 py-2.5 text-sm text-deep">I'm an IS graduate who loves building…</div>
+        <div className="max-w-[75%] rounded-2xl rounded-bl-sm border border-aqua/40 bg-dark px-4 py-2.5 text-sm text-mint">Nice pacing! Try stressing “building” a little more.</div>
+        <div className="flex items-center gap-1 self-center pt-1">
+          {[10, 18, 26, 14, 22, 30, 16, 24, 12].map((h, i) => <span key={i} className="w-1 rounded-full bg-aqua" style={{ height: h }} />)}
+        </div>
+      </div>
+    )
+  }
+  if (kind === 'mobile') {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <div className="w-40 rounded-[1.6rem] border-4 border-dark bg-deep p-3 shadow-xl shadow-black/40">
+          <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-dark" />
+          <p className="text-[10px] text-muted">Today's lesson</p>
+          <p className="font-display text-sm font-semibold text-white">Algebra basics</p>
+          <div className="mt-3 h-1.5 rounded-full bg-dark"><div className="h-full w-2/3 rounded-full bg-aqua" /></div>
+          {['Ask your AI tutor', 'Practice set', 'Review notes'].map((t) => (
+            <div key={t} className="mt-2 rounded-lg bg-dark px-2.5 py-2 text-[10px] text-ink">{t}</div>
+          ))}
+        </div>
+      </div>
+    )
+  }
+  return (
+    <div className="flex h-full flex-col gap-3">
+      <div className="flex items-center justify-between rounded-lg bg-deep/70 px-3 py-2">
+        <span className="h-2 w-16 rounded bg-aqua/70" />
+        <span className="flex gap-2">{[0, 1, 2].map((i) => <span key={i} className="h-2 w-8 rounded bg-mint/20" />)}</span>
+      </div>
+      <div className="flex flex-1 flex-col justify-center rounded-lg bg-gradient-to-br from-aqua/20 to-deep p-5">
+        <span className="h-3 w-2/3 rounded bg-white/80" />
+        <span className="mt-2 h-3 w-1/2 rounded bg-white/50" />
+        <span className="mt-4 h-6 w-24 rounded-full bg-aqua" />
+      </div>
+      <div className="grid grid-cols-3 gap-3">{[0, 1, 2].map((i) => <span key={i} className="h-12 rounded-lg border border-mint/10 bg-deep/70" />)}</div>
+    </div>
+  )
+}
+
+function Projects() {
+  const [active, setActive] = useState(0)
+  const p = projects[active]
+  const slug = p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+  return (
+    <Section id="projects" eyebrow="Featured work" title={<>Systems I've <span className="text-aqua">shipped.</span></>}>
+      <div className="reveal">
+        <div role="tablist" aria-label="Projects" className="glass mx-auto mb-8 flex max-w-full gap-1 overflow-x-auto !rounded-full p-1.5 sm:w-fit">
+          {projects.map((pr, n) => (
+            <button
+              key={pr.title}
+              role="tab"
+              aria-selected={n === active}
+              onClick={() => setActive(n)}
+              className={`whitespace-nowrap rounded-full px-4 py-2 text-sm transition ${n === active ? 'bg-aqua font-medium text-deep' : 'text-muted hover:text-mint'}`}
+            >
+              {pr.title.replace(' Products Inc.', '')}
+            </button>
+          ))}
+        </div>
+
+        <div key={active} className="panel-in grid gap-6 lg:grid-cols-[1.25fr_1fr] lg:items-center">
+          <div className="glass overflow-hidden !rounded-2xl">
+            <div className="flex items-center gap-2 border-b border-mint/10 bg-deep/60 px-4 py-3">
+              <span className="h-2.5 w-2.5 rounded-full bg-mint/30" />
+              <span className="h-2.5 w-2.5 rounded-full bg-mint/30" />
+              <span className="h-2.5 w-2.5 rounded-full bg-mint/30" />
+              <span className="ml-3 truncate rounded-md bg-dark px-3 py-1 font-mono text-xs text-muted">work/{slug}</span>
+            </div>
+            <div className="h-72 bg-gradient-to-br from-dark/80 to-deep p-5 sm:h-80">
+              <ProjectMock kind={p.mock} />
+            </div>
+          </div>
+          <div>
+            <div className="mb-4 flex flex-wrap gap-2">
+              {p.featured && <span className="chip !border-aqua !bg-aqua !text-deep">Featured</span>}
+              {p.badge && <span className="chip inline-flex items-center gap-1"><Award size={12} /> {p.badge}</span>}
+            </div>
+            <h3 className="font-display text-3xl font-semibold text-white">{p.title}</h3>
+            <p className="mt-1 text-lg text-mint">{p.kind}</p>
+            <p className="mt-4 leading-relaxed text-muted">{p.description}</p>
+            <p className="mt-5 flex items-center gap-2 font-mono text-xs text-muted"><Briefcase size={14} className="text-aqua" /> {p.role}</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {p.tech.map((t) => <span key={t} className="chip">{t}</span>)}
+            </div>
+          </div>
+        </div>
+      </div>
+    </Section>
+  )
+}
+
 function Leadership() {
   const top = leadership.find((l) => l.highlight)!
   const rest = leadership.filter((l) => !l.highlight)
   return (
-    <Section id="leadership" eyebrow="06 · Leadership & achievements" title="Leading beyond the code">
+    <Section id="leadership" eyebrow="Leadership & achievements" title="Leading beyond the code">
       <div className="grid gap-5 lg:grid-cols-[1.2fr_1fr]">
         <div className="reveal glass relative overflow-hidden p-8">
           <div className="pointer-events-none absolute -bottom-20 -left-10 h-56 w-56 rounded-full bg-aqua/15 blur-3xl" />
@@ -393,26 +513,86 @@ function Leadership() {
   )
 }
 
-function Contact() {
+/* ───────────── "I build ___" statement band ───────────── */
+function BuildBand() {
+  const i = useCycle(pitch.buildWords.length, 2200)
   return (
-    <Section id="contact" eyebrow="07 · Contact" title="Let's build something together">
-      <div className="reveal glass relative overflow-hidden p-8 text-center sm:p-14">
-        <div className="grid-bg pointer-events-none absolute inset-0 opacity-60" />
-        <div className="relative">
-          <Sparkles className="mx-auto mb-5 text-aqua" size={30} />
-          <p className="mx-auto max-w-xl text-lg leading-relaxed text-muted">
-            I'm open to junior software engineering and full-stack roles, internships and freelance projects, especially work that mixes development, data and AI.
-          </p>
-          <a href={`mailto:${profile.email}`} className="mt-8 inline-flex items-center gap-2 rounded-xl bg-aqua px-6 py-3.5 font-medium text-deep transition hover:bg-mint">
-            <Mail size={18} /> Say hello
-          </a>
-          <div className="mt-8 flex justify-center gap-3">
-            <a href={profile.github} target="_blank" rel="noreferrer" aria-label="GitHub" className="grid h-11 w-11 place-items-center rounded-xl border border-mint/15 text-muted hover:border-aqua/60 hover:text-mint"><GithubIcon /></a>
-            <a href={profile.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn" className="grid h-11 w-11 place-items-center rounded-xl border border-mint/15 text-muted hover:border-aqua/60 hover:text-mint"><LinkedinIcon /></a>
-          </div>
+    <section className="relative overflow-hidden py-24 md:py-32" aria-label="What I build">
+      <div className="pointer-events-none absolute left-1/2 top-1/2 h-72 w-[680px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-aqua/10 blur-[110px]" />
+      <h2 className="relative flex flex-wrap items-center justify-center gap-x-5 gap-y-4 px-4 font-display text-4xl font-bold tracking-tight text-white sm:text-6xl md:text-7xl">
+        I build
+        <span className="inline-grid min-w-[7ch] place-items-center rounded-full border border-aqua/40 bg-dark/80 px-8 py-3 shadow-[0_0_60px_-15px] shadow-aqua/60 sm:px-10 sm:py-4">
+          <span key={i} className="word-in whitespace-nowrap text-mint">{pitch.buildWords[i]}</span>
+        </span>
+      </h2>
+    </section>
+  )
+}
+
+/* ───────────── Contact: prompt + orbit + Let's talk ───────────── */
+function Contact() {
+  const [idea, setIdea] = useState('')
+  const send = (e: FormEvent) => {
+    e.preventDefault()
+    const subject = encodeURIComponent('Project inquiry from your portfolio')
+    const body = encodeURIComponent(idea ? `Hi Jethro,\n\nI'd like to build: ${idea}\n\n` : 'Hi Jethro,\n\n')
+    window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`
+  }
+  const orbiters = [
+    { icon: <Code2 size={18} />, pos: 'left-[6%] top-[38%]' },
+    { icon: <Brain size={18} />, pos: 'left-[22%] top-[6%]' },
+    { icon: <BarChart3 size={18} />, pos: 'right-[20%] top-[4%]' },
+    { icon: <Smartphone size={18} />, pos: 'right-[4%] top-[42%]' },
+    { icon: <Palette size={18} />, pos: 'right-[18%] bottom-[4%]' },
+    { icon: <Database size={18} />, pos: 'left-[20%] bottom-[6%]' },
+  ]
+  return (
+    <section id="contact" className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
+      <form onSubmit={send} className="reveal mx-auto flex max-w-xl items-center gap-2 rounded-full border border-mint/20 bg-ink p-2 pl-6 shadow-2xl shadow-aqua/10">
+        <label htmlFor="idea" className="sr-only">What do you want to build?</label>
+        <input
+          id="idea"
+          value={idea}
+          onChange={(e) => setIdea(e.target.value)}
+          placeholder="Have something to build?"
+          className="min-w-0 flex-1 bg-transparent font-display text-lg font-medium text-deep placeholder:text-deep/70 focus:outline-none sm:text-xl"
+        />
+        <button type="submit" aria-label="Send project idea" className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-aqua text-deep transition hover:bg-dark hover:text-mint">
+          <ArrowRight size={20} />
+        </button>
+      </form>
+
+      <div className="reveal relative mx-auto mt-20 aspect-square w-full max-w-[420px]" aria-hidden="true">
+        <div className="absolute inset-[12%] rounded-full border border-aqua/20" />
+        <div className="absolute inset-[26%] rounded-full border border-dashed border-aqua/25" />
+        <div className="absolute inset-[34%] rounded-full bg-aqua/20 blur-2xl" />
+        <div className="animate-float absolute inset-[36%] grid place-items-center rounded-full border-2 border-aqua/60 bg-dark">
+          <span className="font-display text-4xl font-bold text-aqua">J<span className="text-mint">M</span></span>
+        </div>
+        {orbiters.map((o, n) => (
+          <span key={n} className={`glass animate-float absolute grid h-12 w-12 place-items-center !rounded-2xl text-mint ${o.pos}`} style={{ animationDelay: `${n * 0.7}s` }}>
+            {o.icon}
+          </span>
+        ))}
+      </div>
+      <p className="reveal mt-6 text-center text-lg text-muted">{pitch.availability}</p>
+
+      <div className="reveal mt-14 flex flex-col items-center gap-6 text-center">
+        <div className="flex items-center gap-3">
+          <Logo />
+          <span className="font-display text-2xl font-semibold text-white">Jethro Mandalones</span>
+        </div>
+        <a href={`mailto:${profile.email}`} className="group inline-flex items-center gap-3 rounded-full bg-aqua py-2.5 pl-8 pr-2.5 font-display text-xl font-semibold text-deep transition hover:bg-mint">
+          Let's talk
+          <span className="grid h-10 w-10 place-items-center rounded-full bg-deep text-aqua transition group-hover:translate-x-1"><ArrowRight size={18} /></span>
+        </a>
+        <div className="flex gap-3">
+          <a href={profile.github} target="_blank" rel="noreferrer" aria-label="GitHub" className="grid h-11 w-11 place-items-center rounded-xl border border-mint/15 text-muted hover:border-aqua/60 hover:text-mint"><GithubIcon /></a>
+          <a href={profile.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn" className="grid h-11 w-11 place-items-center rounded-xl border border-mint/15 text-muted hover:border-aqua/60 hover:text-mint"><LinkedinIcon /></a>
+          <a href={`mailto:${profile.email}`} aria-label="Email" className="grid h-11 w-11 place-items-center rounded-xl border border-mint/15 text-muted hover:border-aqua/60 hover:text-mint"><Mail size={18} /></a>
         </div>
       </div>
-    </Section>
+    </section>
   )
 }
 
@@ -423,16 +603,18 @@ export default function App() {
       <Navbar />
       <main>
         <Hero />
+        <Services />
         <About />
         <Qualifications />
         <Stack />
         <Experience />
         <Projects />
         <Leadership />
+        <BuildBand />
         <Contact />
       </main>
       <footer className="border-t border-mint/10 py-8 text-center font-mono text-xs text-muted">
-        © {new Date().getFullYear()} {profile.name} · Built with React, Tailwind & a lot of teal.
+        © {new Date().getFullYear()} {profile.name} · San Pablo City, Laguna
       </footer>
     </>
   )
