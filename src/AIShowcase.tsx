@@ -7,10 +7,10 @@ const TYPED = ['VOICE AGENTS & CALL FLOWS', 'AI TUTORING & SPEECH FEEDBACK', 'CH
 const SWAP = ['talks.', 'tutors.', 'analyzes.', 'sells.']
 const STACK = [
   { name: 'OpenAI API', use: 'Chat · reasoning', level: 92 },
-  { name: 'Azure AI Speech', use: 'Pronunciation · STT', level: 85 },
+  { name: 'Azure AI Speech', use: 'Speech · STT', level: 85 },
   { name: 'Retell AI', use: 'Voice agents', level: 80 },
 ]
-const SHIPPED = ['TalkReady · IEEE APWiMob 2025', 'Succor Haven · AI tutor', "Gallagher's · voice agents"]
+const SHIPPED = ['Succor Haven · AI tutor', "Gallagher's · voice agents"]
 
 function useTypewriter(lines: string[], active: boolean) {
   const [text, setText] = useState('')

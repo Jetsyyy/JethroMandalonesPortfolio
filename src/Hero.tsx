@@ -13,7 +13,7 @@ function supportsWebGL() {
   }
 }
 
-const CREDS = ['IEEE APWiMob 2025 author', "Top 6 Dean's Lister", '486 OJT hours', 'Laravel · React · AI']
+const CREDS = ['IS Club Vice President', "Top 6 Dean's Lister", '486 OJT hours', 'Laravel · React · AI']
 const fade = (v: number) => Math.min(1, Math.max(0, v))
 
 function Pitch() {

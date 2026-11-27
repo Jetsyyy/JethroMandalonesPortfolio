@@ -20,5 +20,8 @@ The site is positioned as **selling Jethro's skills** to clients/employers, not 
 ## Pop-ups
 Modals (case study, certificate viewer, demo video) render through `createPortal` to `document.body` so they sit above the fixed navbar.
 
+## Project accuracy
+**TalkReady** and **E-Athleta** are NOT Jethro's projects, and he has **no IEEE APWiMob paper**. Never add them back. Current projects: Joshua's Meat Products (forecasting), Succor Haven, eKalinga; demos: Genrev Systems, Sandalivid, Succor Haven.
+
 ## Experience accuracy
 Keep the OJT (Alexa's Engineering Services), freelance work, and the Gallagher's Resource short-term engagement as **separate** entries. Don't present them as ongoing or full-time employment.

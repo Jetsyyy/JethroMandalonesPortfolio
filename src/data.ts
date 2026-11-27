@@ -183,7 +183,7 @@ export const about = {
   stats: [
     { value: '3', label: 'Industry roles' },
     { value: '300+', label: 'Students led' },
-    { value: '1', label: 'IEEE paper' },
+    { value: '4', label: 'Certificates' },
   ],
 }
 
@@ -213,8 +213,8 @@ export const qualifications = [
     body: 'Requirements gathering, process modelling and system design as a lead programmer and system analyst.',
   },
   {
-    title: 'Research & Publication',
-    body: 'Co-authored an IEEE APWiMob 2025 paper on the TalkReady AI communication app.',
+    title: 'Continuous Learning',
+    body: 'Certified in AI for Data Analytics (DICT), ethical hacking and data security, and Cisco’s Managing a Business Venture.',
   },
   {
     title: 'Leadership',
@@ -256,17 +256,6 @@ export const projects: Project[] = [
     featured: true,
   },
   {
-    title: 'TalkReady',
-    kind: 'AI-Powered Communication & Speaking App',
-    role: 'Project Lead',
-    description:
-      'Helps users build speaking confidence with AI-driven conversation practice, pronunciation feedback and progress tracking.',
-    tech: ['React', 'Node.js', 'OpenAI', 'Azure AI', 'Firebase'],
-    mock: 'chat',
-    badge: 'IEEE APWiMob 2025',
-    featured: true,
-  },
-  {
     title: 'Succor Haven',
     kind: 'AI Tutoring Mobile App',
     role: 'Developer',
@@ -280,14 +269,6 @@ export const projects: Project[] = [
     role: 'Developer',
     description: 'A Laravel-based platform for PLSP that promotes mental health awareness and connects students to support.',
     tech: ['Laravel', 'Blade', 'MySQL'],
-    mock: 'web',
-  },
-  {
-    title: 'E-Athleta',
-    kind: 'Athlete Information System',
-    role: 'System Analyst',
-    description: 'An information system for managing athlete records and data, from requirements analysis through system design.',
-    tech: ['Systems Analysis', 'Web'],
     mock: 'web',
   },
 ]

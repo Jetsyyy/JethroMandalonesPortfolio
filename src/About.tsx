@@ -7,7 +7,7 @@ const asset = (p: string) => `${import.meta.env.BASE_URL}about/${p}`
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v))
 
 const PROOF_TAGS = [
-  { text: 'IEEE APWiMob 2025 author', pos: 'left-[-6%] top-[14%]', delay: '0s' },
+  { text: 'Capstone lead programmer', pos: 'left-[-6%] top-[14%]', delay: '0s' },
   { text: "Top 6 Dean's Lister", pos: 'right-[-10%] top-[30%]', delay: '1.2s' },
   { text: 'IS Club VP · 300+ students', pos: 'left-[-12%] bottom-[30%]', delay: '.6s' },
   { text: '486 OJT hours', pos: 'right-[-4%] bottom-[14%]', delay: '1.8s' },
