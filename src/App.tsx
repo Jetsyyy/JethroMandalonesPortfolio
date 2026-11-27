@@ -18,7 +18,7 @@ import About from './About'
 import SkillPill from './SkillPill'
 import Contact from './Contact'
 import Certificates from './Certificates'
-import { CreativeIntro, CreativeReel } from './Creative'
+import { CreativeWall } from './Creative'
 import AIShowcase from './AIShowcase'
 
 const NAV = [
@@ -594,8 +594,7 @@ export default function App() {
         <Experience />
         <Demos />
         <Projects />
-        <CreativeIntro />
-        <CreativeReel />
+        <CreativeWall />
         <Leadership />
         <Certificates />
         <BuildBand />

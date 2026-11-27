@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { ArrowDown, MousePointerClick } from 'lucide-react'
 
-const RobotScene = lazy(() => import('./ai/RobotScene'))
+const AvatarScene = lazy(() => import('./ai/AvatarScene'))
 
 const TYPED = ['VOICE AGENTS & CALL FLOWS', 'AI TUTORING & SPEECH FEEDBACK', 'CHAT, SUMMARIES & ANALYTICS', 'OPENAI · AZURE AI · RETELL']
 const SWAP = ['talks.', 'tutors.', 'analyzes.', 'sells.']
@@ -78,13 +78,13 @@ export default function AIShowcase() {
         <div aria-hidden className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(168,232,244,.05)_1px,transparent_1px),linear-gradient(90deg,rgba(168,232,244,.05)_1px,transparent_1px)] bg-[size:80px_80px]" />
         <div aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 h-[70%] w-[50%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(111,214,234,.22),transparent)] blur-2xl" />
 
-        {/* robot */}
+        {/* 3D avatar of Jethro */}
         <div className="absolute inset-x-0 bottom-[22%] top-[12%] cursor-pointer md:inset-0 md:bottom-0 md:top-0"
-          onClick={() => (poke.current += 1)} role="button" aria-label="Spin the robot" tabIndex={0}
+          onClick={() => (poke.current += 1)} role="button" aria-label="Click to make Jethro peek over the sunglasses" tabIndex={0}
           onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (poke.current += 1)}>
           {near && (
             <Suspense fallback={null}>
-              <RobotScene active={visible} reduced={reduced} poke={poke} pointer={pointer} />
+              <AvatarScene active={visible} reduced={reduced} poke={poke} pointer={pointer} />
             </Suspense>
           )}
         </div>
@@ -149,7 +149,7 @@ export default function AIShowcase() {
         {/* bottom-right hint */}
         <div className="pointer-events-none absolute bottom-10 right-10 hidden items-end gap-4 md:flex">
           <p className="max-w-[15rem] text-right text-xs leading-relaxed text-muted">
-            Practical AI inside real products: voice, tutoring and analytics. <span className="inline-flex items-center gap-1 text-mint"><MousePointerClick size={12} /> Click the bot.</span>
+            Practical AI inside real products: voice, tutoring and analytics. <span className="inline-flex items-center gap-1 text-mint"><MousePointerClick size={12} /> Click me.</span>
           </p>
           <a href="#about" className="pointer-events-auto grid h-10 w-10 place-items-center border border-mint/25 text-mint hover:border-lime hover:text-lime" aria-label="Continue to About">
             <ArrowDown size={16} />

@@ -205,3 +205,10 @@ body {
   animation: btn-shine 3.2s ease-in-out infinite; pointer-events: none;
 }
 @media (prefers-reduced-motion: reduce) { .logo-breathe, .btn-shine::after { animation: none; } }
+
+/* ── Creative walls: endless vertical columns ── */
+@keyframes wall-up { to { transform: translateY(-50%); } }
+.wall-track { animation: wall-up 40s linear infinite; }
+.wall-track.reverse { animation-direction: reverse; }
+.wall-col:hover .wall-track { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .wall-track { animation: none; } }

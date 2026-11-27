@@ -4,7 +4,8 @@ import { Award, CalendarDays, ExternalLink, Eye, X } from 'lucide-react'
 import { certificates, type Certificate } from './data'
 import LightStreaks from './fx/LightStreaks'
 
-const thumb = (id: string, w = 1400) => `https://drive.google.com/thumbnail?id=${id}&sz=w${w}`
+// direct Google image host (the thumbnail endpoint redirects here and rate-limits bursts)
+const thumb = (id: string, w = 1400) => `https://lh3.googleusercontent.com/d/${id}=w${w}`
 const preview = (id: string) => `https://drive.google.com/file/d/${id}/preview`
 const view = (id: string) => `https://drive.google.com/file/d/${id}/view`
 

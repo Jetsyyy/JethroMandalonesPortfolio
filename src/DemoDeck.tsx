@@ -3,7 +3,8 @@ import { useCallback, useEffect, useRef, useState, type KeyboardEvent as RKeyboa
 import { ArrowLeft, ArrowRight, Monitor, Play, RotateCcw, Smartphone, X } from 'lucide-react'
 import { demos, type Demo } from './data'
 
-const thumb = (id: string, w = 900) => `https://drive.google.com/thumbnail?id=${id}&sz=w${w}`
+// direct Google image host (the thumbnail endpoint redirects here and rate-limits bursts)
+const thumb = (id: string, w = 900) => `https://lh3.googleusercontent.com/d/${id}=w${w}`
 const embed = (id: string) => `https://drive.google.com/file/d/${id}/preview`
 
 /** Shortest signed distance from `active` to `i` on a ring of `n` cards. */

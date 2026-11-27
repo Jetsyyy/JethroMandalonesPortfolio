@@ -3,72 +3,14 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { ArrowLeft, ArrowRight, ExternalLink, Play, X } from 'lucide-react'
 import { creativeWorks, type CreativeWork } from './data'
 
-const thumb = (id: string, w = 1000) => `https://drive.google.com/thumbnail?id=${id}&sz=w${w}`
-const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v))
-const FILTERS = ['All', 'Campus', 'Client', 'Video'] as const
-type Filter = (typeof FILTERS)[number]
-
-/* ───────── 1. Cinematic statement: lines rise, real work pops between the words ───────── */
-
-function Pill({ id, delay, video }: { id: string; delay: number; video?: boolean }) {
-  return (
-    <span className="pill-pop relative mx-[.12em] inline-block h-[.78em] w-[1.55em] overflow-hidden rounded-full align-[-.06em] ring-1 ring-emerald/40"
-      style={{ transitionDelay: `${delay}ms` }} aria-hidden>
-      <img src={thumb(id, 400)} alt="" className="h-full w-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none' }} />
-      {video && <span className="absolute inset-0 grid place-items-center bg-black/30"><Play size={14} className="fill-white text-white" /></span>}
-    </span>
-  )
+// direct Google image host (the thumbnail endpoint redirects here and rate-limits bursts)
+const retryImg = (id: string, w: number) => (e: React.SyntheticEvent<HTMLImageElement>) => {
+  const img = e.currentTarget
+  if (img.dataset.retried) { img.style.display = 'none'; return }
+  img.dataset.retried = '1'
+  setTimeout(() => { img.src = `https://drive.google.com/thumbnail?id=${id}&sz=w${w}` }, 600 + Math.random() * 1200)
 }
-
-function Line({ children, i }: { children: React.ReactNode; i: number }) {
-  return (
-    <span className="block overflow-hidden pb-[.08em]">
-      <span className="line-rise block" style={{ transitionDelay: `${i * 140}ms` }}>{children}</span>
-    </span>
-  )
-}
-
-export function CreativeIntro() {
-  const ref = useRef<HTMLDivElement>(null)
-  const [shown, setShown] = useState(false)
-  useEffect(() => {
-    const io = new IntersectionObserver(([e]) => e.isIntersecting && (setShown(true), io.disconnect()), { threshold: 0.35 })
-    if (ref.current) io.observe(ref.current)
-    return () => io.disconnect()
-  }, [])
-  const counts = useMemo(() => ({
-    campus: creativeWorks.filter((w) => w.group === 'Campus').length,
-    client: creativeWorks.filter((w) => w.group === 'Client').length,
-    video: creativeWorks.filter((w) => w.group === 'Video').length,
-  }), [])
-
-  return (
-    <section id="creative" className="relative mx-auto max-w-6xl px-4 pb-10 pt-24 sm:px-6 md:pt-32">
-      <p className="eyebrow mb-8 flex items-center gap-3"><span className="h-px w-8 bg-gradient-to-r from-lime to-emerald" />Graphics & video editing</p>
-      <div ref={ref} className={shown ? 'reveal-lines in' : 'reveal-lines'}>
-        <h2 className="font-serif text-[11vw] leading-[.98] tracking-[-.02em] text-white sm:text-7xl md:text-8xl">
-          <Line i={0}>I don't just build systems.</Line>
-          <Line i={1}>I <span className="accent">design</span> <Pill id="1ZxUDGWX_kndeEAte62gcFa_jt-eU1MQT" delay={500} /> the visuals</Line>
-          <Line i={2}>that make <Pill id="11obvisFpNmpidVsEk8UqMJfDbrAybBxi" delay={700} /> people</Line>
-          <Line i={3}><span className="accent">stop scrolling.</span> <Pill id="12ixbMswqs06qwjvPzecRYaHm1vK0RMiJ" delay={900} video /></Line>
-        </h2>
-        <div className="line-fade mt-10 flex flex-wrap items-center gap-x-8 gap-y-4" style={{ transitionDelay: '900ms' }}>
-          <p className="max-w-md text-lg leading-relaxed text-muted">
-            Pubmats for campus events, a full social series for a luxury dry-cleaning brand, and video edits, made in Canva and CapCut.
-          </p>
-          <ul className="flex flex-wrap gap-2">
-            {['Canva', 'CapCut', 'Figma'].map((t) => <li key={t} className="aurora-ring rounded-full bg-space/80 px-4 py-2 font-mono text-xs text-lime">{t}</li>)}
-          </ul>
-          <dl className="flex gap-8 font-mono text-xs text-muted">
-            <div><dt className="sr-only">Campus</dt><dd><span className="font-display text-3xl font-bold text-white">{counts.campus}</span> campus</dd></div>
-            <div><dt className="sr-only">Client</dt><dd><span className="font-display text-3xl font-bold text-white">{counts.client}</span> client</dd></div>
-            <div><dt className="sr-only">Video</dt><dd><span className="font-display text-3xl font-bold text-white">{counts.video}</span> video</dd></div>
-          </dl>
-        </div>
-      </div>
-    </section>
-  )
-}
+const thumb = (id: string, w = 1000) => `https://lh3.googleusercontent.com/d/${id}=w${w}`
 
 /* ───────── 2. Case study: the clicked card flies out of the ring into a full panel ───────── */
 
@@ -198,187 +140,160 @@ function CaseStudy({ list, index, origin, onClose, onStep }: {
   , document.body)
 }
 
-/* ───────── 3. The orbit: works circle a light; scrolling spins the next one to the front ───────── */
+/* ───────── 3. Curved scrolling walls of work around a still centre ───────── */
 
-const TILT_Y = 40 * (Math.PI / 180) // how far the ring is turned away (left side comes toward you)
-const FRONT = Math.PI // angle that sits front-left, nearest the camera
+type Item = { w: CreativeWork; i: number }
 
-export function CreativeReel() {
-  const [filter, setFilter] = useState<Filter>('All')
-  const list = useMemo(() => (filter === 'All' ? creativeWorks : creativeWorks.filter((w) => w.group === filter)), [filter])
-  const n = list.length
-  const wrap = useRef<HTMLElement>(null)
-  const cardEls = useRef<(HTMLButtonElement | null)[]>([])
-  const [prog, setProg] = useState(0)
-  const [vw, setVw] = useState(() => window.innerWidth)
-  const [open, setOpen] = useState<{ i: number; origin: DOMRect | null } | null>(null)
-  const reduced = useMemo(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches, [])
-  const [near, setNear] = useState(false) // load the artwork only when the section is close
+function Column({ items, dir, dur, onOpen, near }: { items: Item[]; dir: 'up' | 'down'; dur: number; onOpen: (i: number, el: HTMLElement) => void; near: boolean }) {
+  const loop = [...items, ...items]
+  return (
+    <div className="wall-col group/col h-full overflow-hidden">
+      <div className={`wall-track flex flex-col gap-3 ${dir === 'down' ? 'reverse' : ''}`} style={{ animationDuration: `${dur}s` }}>
+        {loop.map(({ w, i }, n) => (
+          <button key={`${w.driveId}-${n}`} aria-hidden={n >= items.length} tabIndex={n >= items.length ? -1 : 0}
+            onClick={(e) => onOpen(i, e.currentTarget)} aria-label={`Open ${w.title}`}
+            className={`group relative block w-full shrink-0 overflow-hidden rounded-xl bg-dark ring-1 ring-mint/10 transition duration-300 hover:ring-lime/70 hover:[box-shadow:0_0_30px_-6px_rgba(214,247,255,.7)] ${w.ratio === 'wide' ? 'aspect-video' : 'aspect-[4/5]'}`}>
+            <img src={near ? thumb(w.driveId, 500) : undefined} alt="" draggable={false}
+              onError={retryImg(w.driveId, 500)}
+              className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+            {w.group === 'Video' && (
+              <span className="absolute left-1/2 top-1/2 grid h-9 w-9 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-lime text-space shadow-[0_0_20px] shadow-lime/70">
+                <Play size={14} className="translate-x-[1px] fill-current" />
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// outer columns bend away the most: a drum seen from inside
+const BEND = [
+  { ry: 46, tz: -230, op: 0.55 },
+  { ry: 30, tz: -110, op: 0.8 },
+  { ry: 14, tz: -30, op: 1 },
+]
+
+export function CreativeWall() {
+  const n = creativeWorks.length
+  const sec = useRef<HTMLElement>(null)
+  const [near, setNear] = useState(false)
   useEffect(() => {
     const io = new IntersectionObserver(([e]) => e.isIntersecting && (setNear(true), io.disconnect()), { rootMargin: '1200px' })
-    if (wrap.current) io.observe(wrap.current)
+    if (sec.current) io.observe(sec.current)
     return () => io.disconnect()
   }, [])
-
+  const [open, setOpen] = useState<{ i: number; origin: DOMRect | null } | null>(null)
+  const reduced = useMemo(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches, [])
+  const stepOpen = useCallback((d: number) => setOpen((o) => (o ? { i: (o.i + d + n) % n, origin: null } : o)), [n])
+  const openAt = (i: number, el: HTMLElement) => setOpen({ i, origin: el.getBoundingClientRect() })
+  const [phone, setPhone] = useState(() => window.matchMedia('(max-width: 767px)').matches)
   useEffect(() => {
-    let raf = 0
-    const update = () => {
-      const el = wrap.current
-      if (!el) return
-      const r = el.getBoundingClientRect()
-      setProg(clamp(-r.top / Math.max(1, el.offsetHeight - window.innerHeight)))
-      setVw(window.innerWidth)
-    }
-    const on = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(update) }
-    update()
-    window.addEventListener('scroll', on, { passive: true })
-    window.addEventListener('resize', on)
-    return () => { cancelAnimationFrame(raf); window.removeEventListener('scroll', on); window.removeEventListener('resize', on) }
+    const mq = window.matchMedia('(max-width: 767px)')
+    const on = () => setPhone(mq.matches)
+    mq.addEventListener('change', on)
+    return () => mq.removeEventListener('change', on)
   }, [])
 
-  // one full revolution across the pinned scroll, plus a slow idle drift
-  const [drift, setDrift] = useState(0)
-  useEffect(() => {
-    if (reduced) return
-    let raf = 0, last = performance.now()
-    const tick = (t: number) => { setDrift((d) => d + (t - last) * 0.00004); last = t; raf = requestAnimationFrame(tick) }
-    raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
-  }, [reduced])
+  // six columns, each a rotated slice of the work so neighbours differ
+  const cols = useMemo(() => {
+    const items: Item[] = creativeWorks.map((w, i) => ({ w, i }))
+    return Array.from({ length: 6 }, (_, c) => Array.from({ length: 8 }, (_, k) => items[(c * 5 + k * 3) % items.length]))
+  }, [])
+  const counts = useMemo(() => ({
+    campus: creativeWorks.filter((w) => w.group === 'Campus').length,
+    client: creativeWorks.filter((w) => w.group === 'Client').length,
+    video: creativeWorks.filter((w) => w.group === 'Video').length,
+  }), [])
 
-  const step = (2 * Math.PI) / n
-  const spin = prog * (n - 1) * step + (open ? 0 : drift)
-  const pos = spin / step
-  const activeIdx = ((Math.round(pos) % n) + n) % n
-
-  const narrow = vw < 768
-  const R = narrow ? Math.min(vw * 0.4, 170) : Math.min(vw * 0.3, 420)
-  const cardH = narrow ? 84 : 150
-
-  const pickFilter = (f: Filter) => {
-    setFilter(f)
-    const el = wrap.current
-    if (el && window.scrollY > el.offsetTop) window.scrollTo({ top: el.offsetTop, behavior: 'smooth' })
-  }
-
-  const openAt = (i: number) => setOpen({ i, origin: cardEls.current[i]?.getBoundingClientRect() ?? null })
-  const stepOpen = useCallback((d: number) => setOpen((o) => (o ? { i: (o.i + d + n) % n, origin: null } : o)), [n])
-
-  const active = list[activeIdx]
-
-  if (reduced) {
-    return (
-      <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
-        <div className="columns-2 gap-4 md:columns-3">
-          {creativeWorks.map((w, i) => (
-            <button key={w.driveId} onClick={() => setOpen({ i, origin: null })} className="mb-4 block w-full overflow-hidden rounded-2xl ring-1 ring-mint/10">
-              <img src={thumb(w.driveId, 700)} alt={w.title} className="w-full" />
-            </button>
-          ))}
-        </div>
-        {open && <CaseStudy list={creativeWorks} index={open.i} origin={null} onClose={() => setOpen(null)} onStep={(d) => setOpen((o) => o && { i: (o.i + d + creativeWorks.length) % creativeWorks.length, origin: null })} />}
-      </section>
-    )
-  }
+  const wall = (side: 'left' | 'right') => (
+    <div className="absolute inset-y-0 hidden w-[31%] md:block" style={{ [side]: 0, perspective: '900px' } as React.CSSProperties}>
+      <div className="flex h-full gap-3 px-2" style={{ transformStyle: 'preserve-3d', flexDirection: side === 'left' ? 'row' : 'row-reverse' }}>
+        {BEND.map((b, k) => {
+          const c = side === 'left' ? k : k + 3
+          return (
+            <div key={k} className="h-[118%] flex-1 -translate-y-[8%]"
+              style={{ transform: `translateZ(${b.tz}px) rotateY(${side === 'left' ? b.ry : -b.ry}deg)`, opacity: b.op, transformOrigin: side === 'left' ? 'right center' : 'left center' }}>
+              <Column items={cols[c]} dir={c % 2 ? 'down' : 'up'} dur={reduced ? 0 : 38 + c * 6} onOpen={openAt} near={near} />
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
 
   return (
-    <section ref={wrap} className="relative" style={{ height: `${Math.max(320, n * 26)}vh` }} aria-label="Graphics and video portfolio">
-      <div className="sticky top-0 h-[100svh] overflow-hidden bg-[radial-gradient(ellipse_at_50%_50%,rgba(3,18,26,.2),#02090E_70%)]">
-        {/* header */}
-        <div className="relative z-30 mx-auto flex max-w-7xl flex-wrap items-start justify-between gap-4 px-4 pt-24 sm:px-8">
-          <div>
-            <p className="font-mono text-[11px] uppercase tracking-[.25em] text-emerald">Selected edits · orbit</p>
-            <p className="mt-1 font-mono text-xs text-muted">Scroll to spin · click any piece to open</p>
-          </div>
-          <div role="tablist" aria-label="Filter edits" className="glass flex gap-1 !rounded-full p-1">
-            {FILTERS.map((f) => {
-              const count = f === 'All' ? creativeWorks.length : creativeWorks.filter((w) => w.group === f).length
-              return (
-                <button key={f} role="tab" aria-selected={filter === f} onClick={() => pickFilter(f)}
-                  className={`rounded-full px-3 py-1.5 text-xs transition sm:px-4 sm:text-sm ${filter === f ? 'bg-lime font-medium text-space' : 'text-muted hover:text-mint'}`}>
-                  {f} <span className="font-mono opacity-60">{count}</span>
-                </button>
-              )
-            })}
-          </div>
-        </div>
+    <section id="creative" ref={sec} className="relative h-[100svh] min-h-[680px] overflow-hidden" aria-label="Graphics and video portfolio">
+      {!phone && wall('left')}
+      {!phone && wall('right')}
 
-        {/* the light */}
-        <div aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2">
-          <div className="absolute left-1/2 top-1/2 h-[70vmin] w-[70vmin] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(111,214,234,.22),rgba(76,155,196,.06)_55%,transparent)]" />
-          <div className="orbit-rays absolute left-1/2 top-1/2 h-[46vmin] w-[46vmin] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-70 [background:repeating-conic-gradient(from_0deg,rgba(230,250,255,.22)_0deg_.6deg,transparent_.6deg_9deg)] [mask-image:radial-gradient(closest-side,#000_10%,transparent)]" />
-          <div className="absolute left-1/2 top-1/2 h-36 w-36 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(255,255,255,.95),rgba(214,247,255,.35)_40%,transparent)] blur-md" />
-          <div className="orbit-core absolute left-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white shadow-[0_0_40px_14px_rgba(255,255,255,.85),0_0_120px_40px_rgba(111,214,234,.5)]" />
-          <div className="absolute left-1/2 top-1/2 h-px w-[60vmin] -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-transparent via-white/70 to-transparent" />
-        </div>
-
-        {/* the ring */}
-        <div className="absolute inset-0" style={{ perspective: '1400px', perspectiveOrigin: '50% 50%' }}>
-          <div className="absolute left-1/2 top-1/2" style={{ transformStyle: 'preserve-3d' }}>
-            {list.map((w, i) => {
-              const th = FRONT + i * step - spin
-              const cx = R * Math.cos(th), cy = R * Math.sin(th) * 0.78
-              const x = cx * Math.cos(TILT_Y)
-              const z = -cx * Math.sin(TILT_Y)            // left side (cos<0) comes toward the camera
-              const depth = (z / (R * Math.sin(TILT_Y)) + 1) / 2 // 0 = far, 1 = near
-              const isActive = i === activeIdx
-              const wCard = w.ratio === 'wide' ? cardH * 1.6 : cardH * 0.8
-              const hCard = w.ratio === 'wide' ? cardH * 0.9 : cardH
-              return (
-                <button
-                  key={w.driveId}
-                  ref={(el) => { cardEls.current[i] = el }}
-                  onClick={() => openAt(i)}
-                  aria-label={`Open ${w.title}`}
-                  tabIndex={depth > 0.55 ? 0 : -1}
-                  className="group absolute left-0 top-0 overflow-hidden rounded-[14px] bg-dark text-left outline-none"
-                  style={{
-                    width: wCard, height: hCard,
-                    transform: `translate(-50%,-50%) translate3d(${x}px, ${cy}px, ${z}px) rotateY(${-cx * 0.035 - 8}deg) rotateZ(${Math.sin(th) * -6}deg)`,
-                    filter: `brightness(${0.35 + depth * 0.75}) saturate(${0.6 + depth * 0.5})`,
-                    boxShadow: isActive
-                      ? '0 0 0 2px #D6F7FF, 0 30px 70px -20px rgba(214,247,255,.55)'
-                      : `0 0 0 1.5px rgba(${w.group === 'Campus' ? '111,214,234' : w.group === 'Video' ? '214,247,255' : '76,155,196'},${0.25 + depth * 0.45})`,
-                    zIndex: Math.round(depth * 100),
-                  }}
-                >
-                  <img src={near ? thumb(w.driveId, 700) : undefined} alt="" draggable={false}
-                    onError={(e) => { e.currentTarget.style.display = 'none' }}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110 group-focus-visible:scale-110" />
-                  {/* curved-glass sheen */}
-                  <span aria-hidden className="pointer-events-none absolute inset-0 bg-[linear-gradient(100deg,rgba(255,255,255,.22),transparent_35%,transparent_65%,rgba(0,0,0,.35))]" />
-                  {w.group === 'Video' && (
-                    <span className="absolute left-1/2 top-1/2 grid h-10 w-10 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-lime text-space shadow-[0_0_24px] shadow-lime/70">
-                      <Play size={16} className="translate-x-[1px] fill-current" />
-                    </span>
-                  )}
-                </button>
-              )
-            })}
-          </div>
-        </div>
-
-        {/* big title of the piece at the front */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 bg-gradient-to-t from-[#02090E] via-[#02090E]/70 to-transparent px-4 pb-8 pt-20 sm:px-8">
-          <div className="mx-auto flex max-w-7xl items-end justify-between gap-6">
-            <div className="min-w-0">
-              <p className="mb-2 font-mono text-[11px] uppercase tracking-[.25em] text-emerald">
-                <span className="text-lime">{String(activeIdx + 1).padStart(2, '0')}</span> / {String(n).padStart(2, '0')} · {active.group} · {active.tool}
-              </p>
-              <div className="overflow-hidden">
-                <h3 key={active.driveId} className="word-rise !block truncate font-display text-[11vw] font-bold leading-[.95] tracking-[-.03em] text-white sm:text-7xl md:text-8xl">
-                  {active.title.replace(/^Sudsies · /, '').replace(/ · .*$/, '')}
-                </h3>
-              </div>
-              <p className="mt-2 text-sm text-muted">{active.title.startsWith('Sudsies') ? 'Sudsies social series' : metaFor(active).format}</p>
-            </div>
-            <button onClick={() => openAt(activeIdx)} className="pointer-events-auto hidden shrink-0 items-center gap-2 rounded-full border border-lime/50 px-5 py-3 text-sm text-lime transition hover:bg-lime hover:text-space sm:inline-flex">
-              Open case <ArrowRight size={16} />
-            </button>
+      {/* phones: two rolling rows instead of side walls */}
+      {phone && <>
+      <div className="absolute inset-x-0 top-20 md:hidden" style={{ perspective: '700px' }}>
+        <div className="marquee overflow-hidden" style={{ transform: 'rotateX(18deg)' }}>
+          <div className="marquee-track gap-3" style={{ animationDuration: '50s' }}>
+            {[...cols[0], ...cols[0]].map(({ w, i }, k) => (
+              <button key={k} onClick={(e) => openAt(i, e.currentTarget)} aria-label={`Open ${w.title}`} className="h-24 shrink-0 overflow-hidden rounded-lg ring-1 ring-mint/10" style={{ aspectRatio: w.ratio === 'wide' ? '16/9' : '4/5' }}>
+                <img src={near ? thumb(w.driveId, 500) : undefined} alt="" onError={retryImg(w.driveId, 500)} className="h-full w-full object-cover text-transparent" />
+              </button>
+            ))}
           </div>
         </div>
       </div>
-      {open && <CaseStudy key={open.origin ? `o${open.i}` : 'nav'} list={list} index={open.i} origin={open.origin} onClose={() => setOpen(null)} onStep={stepOpen} />}
+      <div className="absolute inset-x-0 bottom-10 md:hidden" style={{ perspective: '700px' }}>
+        <div className="marquee overflow-hidden" style={{ transform: 'rotateX(-18deg)' }}>
+          <div className="marquee-track reverse gap-3" style={{ animationDuration: '56s' }}>
+            {[...cols[3], ...cols[3]].map(({ w, i }, k) => (
+              <button key={k} onClick={(e) => openAt(i, e.currentTarget)} aria-label={`Open ${w.title}`} className="h-24 shrink-0 overflow-hidden rounded-lg ring-1 ring-mint/10" style={{ aspectRatio: w.ratio === 'wide' ? '16/9' : '4/5' }}>
+                <img src={near ? thumb(w.driveId, 500) : undefined} alt="" onError={retryImg(w.driveId, 500)} className="h-full w-full object-cover text-transparent" />
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      </>}
+
+      {/* fog: edges + top/bottom fade so the walls dissolve into the scene */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_30%_50%_at_50%_50%,rgba(3,18,26,.94)_45%,rgba(3,18,26,.35)_78%,transparent)]" />
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-space to-transparent" />
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-space to-transparent" />
+
+      {/* the still centre */}
+      <div className="relative z-10 mx-auto flex h-full max-w-xl flex-col items-center justify-center px-6 text-center">
+        <span className="relative">
+          <span aria-hidden className="absolute -inset-2 rounded-full bg-[radial-gradient(closest-side,rgba(168,232,244,.35),transparent)] blur-md" />
+          <img src={`${import.meta.env.BASE_URL}about/portrait.jpg`} alt="Jethro Mandalones" className="relative h-20 w-20 rounded-full object-cover object-top ring-2 ring-lime/50" />
+        </span>
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-sm">
+          <span className="font-medium text-white">Jethro Mandalones</span>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-lime/30 bg-lime/10 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-lime">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lime" /> Open for design work
+          </span>
+        </div>
+        <p className="eyebrow mt-6">Graphics & video editing</p>
+        <h2 className="mt-3 font-display text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-6xl">
+          Visuals that make people <span className="accent">stop scrolling.</span>
+        </h2>
+        <p className="mt-4 max-w-md text-muted">
+          Campus pubmats, a full social series for a luxury dry-cleaning brand, and video edits, made in Canva, CapCut and Figma.
+        </p>
+        <div className="mt-7 flex flex-wrap justify-center gap-3">
+          <button onClick={() => setOpen({ i: 0, origin: null })}
+            className="btn-shine relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-lime px-6 py-3 font-semibold text-space shadow-[0_0_30px_-8px_rgba(214,247,255,.9)] transition hover:bg-mint">
+            <Play size={15} className="fill-current" /> See the work
+          </button>
+          <a href="#contact" className="inline-flex items-center gap-2 rounded-full border border-mint/25 bg-space/60 px-6 py-3 text-ink backdrop-blur transition hover:border-lime hover:text-white">
+            Start a project <ArrowRight size={16} />
+          </a>
+        </div>
+        <p className="mt-6 font-mono text-[11px] uppercase tracking-[.2em] text-muted">
+          {counts.campus} campus · {counts.client} client · {counts.video} video · tap any piece
+        </p>
+      </div>
+
+      {open && <CaseStudy key={open.origin ? `o${open.i}` : 'nav'} list={creativeWorks} index={open.i} origin={open.origin} onClose={() => setOpen(null)} onStep={stepOpen} />}
     </section>
   )
 }
