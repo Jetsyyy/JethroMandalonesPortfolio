@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
 import {
   ArrowRight, Award, BarChart3, Brain, Briefcase, Check, Code2, Compass,
-  Database, FileText, GraduationCap, Layout, Mail, MapPin, Menu, Palette, Server,
+  Database, FileText, GraduationCap, Layout, Mail, MapPin, Menu, MessageCircle, Palette, Server,
   Smartphone, Users, Wrench, X,
 } from 'lucide-react'
 import {
@@ -52,6 +52,11 @@ const GithubIcon = () => (
 const LinkedinIcon = () => (
   <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
     <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z" />
+  </svg>
+)
+const FacebookIcon = () => (
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+    <path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z" />
   </svg>
 )
 
@@ -583,15 +588,36 @@ function Contact() {
           <Logo />
           <span className="font-display text-2xl font-semibold text-white">Jethro Mandalones</span>
         </div>
-        <a href={`mailto:${profile.email}`} className="group inline-flex items-center gap-3 rounded-full bg-aqua py-2.5 pl-8 pr-2.5 font-display text-xl font-semibold text-deep transition hover:bg-mint">
-          Let's talk
-          <span className="grid h-10 w-10 place-items-center rounded-full bg-deep text-aqua transition group-hover:translate-x-1"><ArrowRight size={18} /></span>
-        </a>
-        <div className="flex gap-3">
-          <a href={profile.github} target="_blank" rel="noreferrer" aria-label="GitHub" className="grid h-11 w-11 place-items-center rounded-xl border border-mint/15 text-muted hover:border-aqua/60 hover:text-mint"><GithubIcon /></a>
-          <a href={profile.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn" className="grid h-11 w-11 place-items-center rounded-xl border border-mint/15 text-muted hover:border-aqua/60 hover:text-mint"><LinkedinIcon /></a>
-          <a href={`mailto:${profile.email}`} aria-label="Email" className="grid h-11 w-11 place-items-center rounded-xl border border-mint/15 text-muted hover:border-aqua/60 hover:text-mint"><Mail size={18} /></a>
-          <a href={profile.resume} target="_blank" rel="noreferrer" className="inline-flex h-11 items-center gap-2 rounded-xl border border-mint/15 px-4 text-sm text-muted hover:border-aqua/60 hover:text-mint"><FileText size={16} /> View CV</a>
+        <div className="flex flex-wrap justify-center gap-3">
+          <a href={`mailto:${profile.email}`} className="group inline-flex items-center gap-3 rounded-full bg-aqua py-2.5 pl-8 pr-2.5 font-display text-xl font-semibold text-deep transition hover:bg-mint">
+            Let's talk
+            <span className="grid h-10 w-10 place-items-center rounded-full bg-deep text-aqua transition group-hover:translate-x-1"><ArrowRight size={18} /></span>
+          </a>
+          <a href={profile.whatsapp} target="_blank" rel="noreferrer" className="group inline-flex items-center gap-2.5 rounded-full border border-emerald/40 bg-space/70 px-6 py-3 font-display text-lg font-semibold text-emerald backdrop-blur transition hover:border-emerald hover:bg-emerald/10">
+            <MessageCircle size={20} /> WhatsApp me
+          </a>
+        </div>
+
+        <div className="mt-2 flex flex-col items-center gap-1.5 font-mono text-sm text-muted sm:flex-row sm:gap-6">
+          <a href={`mailto:${profile.email}`} className="inline-flex items-center gap-2 transition hover:text-mint"><Mail size={15} className="text-aqua" />{profile.email}</a>
+          <a href={profile.whatsapp} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 transition hover:text-mint"><MessageCircle size={15} className="text-emerald" />{profile.phoneDisplay}</a>
+        </div>
+
+        <div className="flex flex-wrap justify-center gap-3">
+          {[
+            { href: profile.linkedin, label: 'LinkedIn', icon: <LinkedinIcon /> },
+            { href: profile.github, label: 'GitHub', icon: <GithubIcon /> },
+            { href: profile.facebook, label: 'Facebook', icon: <FacebookIcon /> },
+            { href: profile.whatsapp, label: 'WhatsApp', icon: <MessageCircle size={18} /> },
+            { href: `mailto:${profile.email}`, label: 'Email', icon: <Mail size={18} /> },
+          ].map((s) => (
+            <a key={s.label} href={s.href} aria-label={s.label} title={s.label}
+              target={s.href.startsWith('http') ? '_blank' : undefined} rel="noreferrer"
+              className="spotlight grid h-11 w-11 place-items-center rounded-xl border border-mint/15 text-muted transition hover:border-emerald/60 hover:text-lime">
+              {s.icon}
+            </a>
+          ))}
+          <a href={profile.resume} target="_blank" rel="noreferrer" className="inline-flex h-11 items-center gap-2 rounded-xl border border-mint/15 px-4 text-sm text-muted transition hover:border-emerald/60 hover:text-lime"><FileText size={16} /> View CV</a>
         </div>
       </div>
     </section>

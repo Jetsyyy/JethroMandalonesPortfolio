@@ -8,10 +8,13 @@ export const profile = {
   tagline:
     'Information Systems graduate building AI-integrated software that solves real business problems, from predictive analytics to mobile apps.',
   location: 'San Pablo City, Laguna, Philippines',
-  // TODO: replace with your real links
-  email: 'your.email@example.com',
+  email: 'mandalonesjeth748@gmail.com',
   github: 'https://github.com/Jetsyyy',
-  linkedin: 'https://www.linkedin.com/in/your-profile',
+  linkedin: 'https://www.linkedin.com/in/jethromandalones/',
+  facebook: 'https://www.facebook.com/jethjeth.mandalones',
+  // WhatsApp needs the international format: 0945 730 2942 → +63 945 730 2942
+  whatsapp: 'https://wa.me/639457302942',
+  phoneDisplay: '+63 945 730 2942',
   resume: 'https://drive.google.com/file/d/18i_QD-arFGC7lMZagb80krc0bJ9RE3Ya/view',
 }
 
