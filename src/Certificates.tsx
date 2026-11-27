@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom'
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { Award, CalendarDays, ExternalLink, Eye, X } from 'lucide-react'
 import { certificates, type Certificate } from './data'
@@ -45,7 +46,7 @@ function CertModal({ c, onClose }: { c: Certificate; onClose: () => void }) {
     document.body.style.overflow = 'hidden'
     return () => { document.removeEventListener('keydown', onKey); document.body.style.overflow = prev }
   }, [onClose])
-  return (
+  return createPortal(
     <div role="dialog" aria-modal="true" aria-label={c.title} onClick={onClose}
       className="panel-in fixed inset-0 z-[100] flex flex-col items-center justify-center bg-space/90 p-4 backdrop-blur-md">
       <div className="mb-4 flex w-full max-w-5xl items-center justify-between gap-4" onClick={(e) => e.stopPropagation()}>
@@ -65,7 +66,7 @@ function CertModal({ c, onClose }: { c: Certificate; onClose: () => void }) {
         Open in Google Drive <ExternalLink size={14} />
       </a>
     </div>
-  )
+  , document.body)
 }
 
 function CertCard({ c, style, active, onOpen, shine }: { c: Certificate; style: CSSProperties; active: boolean; onOpen: () => void; shine: number }) {

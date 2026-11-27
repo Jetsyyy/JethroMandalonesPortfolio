@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom'
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent as RKeyboardEvent, type PointerEvent as RPointerEvent } from 'react'
 import { ArrowLeft, ArrowRight, Monitor, Play, RotateCcw, Smartphone, X } from 'lucide-react'
 import { demos, type Demo } from './data'
@@ -121,7 +122,7 @@ function VideoModal({ d, onClose }: { d: Demo; onClose: () => void }) {
     return () => { document.removeEventListener('keydown', onKey); document.body.style.overflow = prev }
   }, [onClose])
 
-  return (
+  return createPortal(
     <div role="dialog" aria-modal="true" aria-label={`${d.title} demo video`}
       className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-deep/90 p-4 backdrop-blur-md panel-in"
       onClick={onClose}>
@@ -143,7 +144,7 @@ function VideoModal({ d, onClose }: { d: Demo; onClose: () => void }) {
         Video not loading? Open it in Google Drive
       </a>
     </div>
-  )
+  , document.body)
 }
 
 export default function DemoDeck() {

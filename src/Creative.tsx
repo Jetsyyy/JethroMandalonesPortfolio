@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom'
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { ArrowLeft, ArrowRight, ExternalLink, Play, X } from 'lucide-react'
 import { creativeWorks, type CreativeWork } from './data'
@@ -69,10 +70,72 @@ export function CreativeIntro() {
   )
 }
 
-/* ───────── 2. Lightbox with prev / next ───────── */
+/* ───────── 2. Case study: the clicked card flies out of the ring into a full panel ───────── */
 
-function Viewer({ list, index, onClose, onStep }: { list: CreativeWork[]; index: number; onClose: () => void; onStep: (d: number) => void }) {
+type Meta = { client: string; format: string; tagline: string; brief: string; services: string[] }
+
+function metaFor(w: CreativeWork): Meta {
+  if (w.group === 'Video') {
+    return {
+      client: 'Personal project', format: '16:9 video edit',
+      tagline: 'Fresh cut, bold titles.',
+      brief: 'A short promotional edit with punchy kinetic titles, colour grading and pacing cut to the beat.',
+      services: ['Editing', 'Motion titles', 'Colour'],
+    }
+  }
+  if (w.title.startsWith('Sudsies')) {
+    return {
+      client: 'Sudsies · luxury dry cleaning', format: '4:5 social post',
+      tagline: 'Luxury care, told post by post.',
+      brief: 'Part of a 14-post social series for a premium garment-care brand: consistent layouts, brand colours and copy that sells care, not just cleaning.',
+      services: ['Social series', 'Layout', 'Brand system'],
+    }
+  }
+  if (w.group === 'Client') {
+    return {
+      client: 'Local food retailer', format: '16:9 promo',
+      tagline: 'Loud, bright, order-now energy.',
+      brief: 'A high-energy product promo built to grab attention in feeds and push a clear call to action.',
+      services: ['Promo design', 'Product layout', 'CTA'],
+    }
+  }
+  return {
+    client: 'PLSP campus organizations', format: '16:9 event pubmat',
+    tagline: 'Campus events that look the part.',
+    brief: 'Event publication material for college organizations: bold typography, photo compositing and a layout that reads at a glance.',
+    services: ['Pubmat', 'Typography', 'Photo compositing'],
+  }
+}
+
+function CaseStudy({ list, index, origin, onClose, onStep }: {
+  list: CreativeWork[]; index: number; origin: DOMRect | null; onClose: () => void; onStep: (d: number) => void
+}) {
   const w = list[index]
+  const m = metaFor(w)
+  const art = useRef<HTMLDivElement>(null)
+  const [flown, setFlown] = useState(!origin)
+
+  // FLIP: start the artwork exactly where the card was in the ring, then let it fly into place
+  useLayoutEffect(() => {
+    const el = art.current
+    if (!el || !origin) { setFlown(true); return }
+    const to = el.getBoundingClientRect()
+    const sx = origin.width / to.width, sy = origin.height / to.height
+    el.style.transition = 'none'
+    el.style.transformOrigin = '0 0'
+    el.style.transform = `translate(${origin.left - to.left}px, ${origin.top - to.top}px) scale(${sx}, ${sy})`
+    el.style.borderRadius = '18px'
+    void el.offsetWidth
+    requestAnimationFrame(() => {
+      el.style.transition = 'transform .85s cubic-bezier(.7,0,.2,1), border-radius .85s'
+      el.style.transform = 'none'
+      el.style.borderRadius = '28px'
+      setTimeout(() => setFlown(true), 380)
+    })
+    // only on first open
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
@@ -85,68 +148,77 @@ function Viewer({ list, index, onClose, onStep }: { list: CreativeWork[]; index:
     return () => { document.removeEventListener('keydown', onKey); document.body.style.overflow = prev }
   }, [onClose, onStep])
 
-  return (
-    <div role="dialog" aria-modal="true" aria-label={w.title} onClick={onClose}
-      className="panel-in fixed inset-0 z-[100] flex flex-col items-center justify-center gap-4 bg-space/95 p-4 backdrop-blur-md">
-      <div className="flex w-full max-w-6xl items-center justify-between gap-4" onClick={(e) => e.stopPropagation()}>
-        <div>
-          <p className="font-mono text-xs uppercase tracking-widest text-emerald">{w.group} · {w.tool}</p>
-          <h3 className="font-serif text-3xl text-white">{w.title}</h3>
-        </div>
-        <div className="flex items-center gap-3">
-          <span className="font-mono text-xs text-muted">{String(index + 1).padStart(2, '0')} / {String(list.length).padStart(2, '0')}</span>
-          <button onClick={onClose} aria-label="Close" className="grid h-11 w-11 place-items-center rounded-full border border-mint/20 text-mint hover:bg-dark"><X size={20} /></button>
-        </div>
-      </div>
-      <div className="relative flex min-h-0 w-full max-w-6xl flex-1 items-center justify-center" onClick={(e) => e.stopPropagation()}>
-        <button onClick={() => onStep(-1)} aria-label="Previous" className="absolute left-0 z-10 grid h-12 w-12 place-items-center rounded-full border border-mint/20 bg-space/80 text-mint hover:border-lime hover:text-lime sm:-left-2"><ArrowLeft size={20} /></button>
-        {w.group === 'Video' ? (
-          <div className="aspect-video w-full max-w-5xl overflow-hidden rounded-2xl bg-black ring-1 ring-emerald/30">
+  return createPortal(
+    <div role="dialog" aria-modal="true" aria-label={`${w.title} case study`} className="fixed inset-0 z-[100] overflow-y-auto bg-space/95 backdrop-blur-md">
+      <div className="pointer-events-none absolute left-1/3 top-1/2 h-[60vh] w-[60vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(46,229,157,.16),transparent)] blur-2xl" />
+      <div className="relative mx-auto grid min-h-full max-w-7xl items-center gap-8 px-4 py-20 sm:px-8 lg:grid-cols-[1.35fr_1fr] lg:gap-14">
+        <button onClick={onClose} aria-label="Close case study" className="fixed right-4 top-4 z-10 grid h-12 w-12 place-items-center rounded-full border border-mint/25 bg-space/80 text-mint transition hover:rotate-90 hover:border-lime hover:text-lime sm:right-8 sm:top-8">
+          <X size={20} />
+        </button>
+
+        <div ref={art} className={`relative overflow-hidden rounded-[28px] bg-dark shadow-[0_40px_120px_-30px_rgba(46,229,157,.45)] ring-1 ring-emerald/30 ${w.ratio === 'post' ? 'mx-auto aspect-[4/5] w-full max-w-[520px]' : 'aspect-video w-full'}`}>
+          {w.group === 'Video' && flown ? (
             <iframe src={`https://drive.google.com/file/d/${w.driveId}/preview`} title={w.title} allow="autoplay; fullscreen" allowFullScreen className="h-full w-full" />
+          ) : (
+            <>
+              {/* instant: same size the ring already loaded; sharp version fades in over it */}
+              <img key={`s${w.driveId}`} src={thumb(w.driveId, 700)} alt={w.title} className="absolute inset-0 h-full w-full object-cover text-transparent" />
+              <img key={`l${w.driveId}`} src={thumb(w.driveId, 1800)} alt="" aria-hidden
+                onLoad={(e) => { e.currentTarget.style.opacity = '1' }}
+                onError={(e) => { e.currentTarget.style.display = 'none' }}
+                className="absolute inset-0 h-full w-full object-cover text-transparent opacity-0 transition-opacity duration-500" />
+            </>
+          )}
+        </div>
+
+        <div className={`transition-all duration-700 ${flown ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}>
+          <p className="font-mono text-[11px] uppercase tracking-[.25em] text-emerald">
+            {String(index + 1).padStart(2, '0')} / {String(list.length).padStart(2, '0')} · {w.group}
+          </p>
+          <h3 className="mt-3 font-display text-4xl font-bold leading-[1.02] tracking-tight text-white sm:text-6xl">{w.title.replace(/^Sudsies · /, 'Sudsies — ')}</h3>
+          <p className="mt-3 font-serif text-2xl italic text-lime">{m.tagline}</p>
+          <p className="mt-5 max-w-md leading-relaxed text-muted">{m.brief}</p>
+          <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-5 border-t border-mint/10 pt-6">
+            <div><dt className="font-mono text-[10px] uppercase tracking-widest text-muted">Client</dt><dd className="mt-1 text-white">{m.client}</dd></div>
+            <div><dt className="font-mono text-[10px] uppercase tracking-widest text-muted">Format</dt><dd className="mt-1 text-white">{m.format}</dd></div>
+            <div><dt className="font-mono text-[10px] uppercase tracking-widest text-muted">Made in</dt><dd className="mt-1 text-white">{w.tool}</dd></div>
+            <div><dt className="font-mono text-[10px] uppercase tracking-widest text-muted">Services</dt><dd className="mt-1 text-white">{m.services.join(' · ')}</dd></div>
+          </dl>
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <button onClick={() => onStep(-1)} aria-label="Previous work" className="grid h-12 w-12 place-items-center rounded-full border border-mint/25 text-mint hover:border-lime hover:text-lime"><ArrowLeft size={18} /></button>
+            <button onClick={() => onStep(1)} aria-label="Next work" className="grid h-12 w-12 place-items-center rounded-full border border-mint/25 text-mint hover:border-lime hover:text-lime"><ArrowRight size={18} /></button>
+            <a href={`https://drive.google.com/file/d/${w.driveId}/view`} target="_blank" rel="noreferrer"
+              className="ml-auto inline-flex items-center gap-2 rounded-full bg-lime px-5 py-3 text-sm font-semibold text-space transition hover:bg-mint">
+              Full size <ExternalLink size={15} />
+            </a>
           </div>
-        ) : (
-          <img key={w.driveId} src={thumb(w.driveId, 2000)} alt={w.title} className="panel-in max-h-full max-w-full rounded-xl object-contain shadow-[0_0_80px_-20px] shadow-emerald/40" />
-        )}
-        <button onClick={() => onStep(1)} aria-label="Next" className="absolute right-0 z-10 grid h-12 w-12 place-items-center rounded-full border border-mint/20 bg-space/80 text-mint hover:border-lime hover:text-lime sm:-right-2"><ArrowRight size={20} /></button>
+        </div>
       </div>
-      <a href={`https://drive.google.com/file/d/${w.driveId}/view`} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}
-        className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-mint">Open in Google Drive <ExternalLink size={14} /></a>
     </div>
-  )
+  , document.body)
 }
 
-/* ───────── 3. Pinned horizontal reel on a curved 3D track ───────── */
+/* ───────── 3. The orbit: works circle a light; scrolling spins the next one to the front ───────── */
+
+const TILT_Y = 40 * (Math.PI / 180) // how far the ring is turned away (left side comes toward you)
+const FRONT = Math.PI // angle that sits front-left, nearest the camera
 
 export function CreativeReel() {
   const [filter, setFilter] = useState<Filter>('All')
   const list = useMemo(() => (filter === 'All' ? creativeWorks : creativeWorks.filter((w) => w.group === filter)), [filter])
+  const n = list.length
   const wrap = useRef<HTMLElement>(null)
-  const track = useRef<HTMLDivElement>(null)
-  const cards = useRef<(HTMLButtonElement | null)[]>([])
-  const [dims, setDims] = useState({ trackW: 0, vw: 1, vh: 1, centers: [] as number[] })
+  const cardEls = useRef<(HTMLButtonElement | null)[]>([])
   const [prog, setProg] = useState(0)
-  const [cursor, setCursor] = useState({ x: 0, y: 0, on: false, label: 'View' })
-  const [open, setOpen] = useState<number | null>(null)
+  const [vw, setVw] = useState(() => window.innerWidth)
+  const [open, setOpen] = useState<{ i: number; origin: DOMRect | null } | null>(null)
   const reduced = useMemo(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches, [])
-
-  const measure = useCallback(() => {
-    const t = track.current
-    if (!t) return
-    setDims({
-      trackW: t.scrollWidth,
-      vw: window.innerWidth,
-      vh: window.innerHeight,
-      centers: cards.current.slice(0, list.length).map((c) => (c ? c.offsetLeft + c.offsetWidth / 2 : 0)),
-    })
-  }, [list.length])
-
-  useLayoutEffect(() => {
-    measure()
-    const ro = new ResizeObserver(measure)
-    if (track.current) ro.observe(track.current)
-    window.addEventListener('resize', measure)
-    return () => { ro.disconnect(); window.removeEventListener('resize', measure) }
-  }, [measure])
+  const [near, setNear] = useState(false) // load the artwork only when the section is close
+  useEffect(() => {
+    const io = new IntersectionObserver(([e]) => e.isIntersecting && (setNear(true), io.disconnect()), { rootMargin: '1200px' })
+    if (wrap.current) io.observe(wrap.current)
+    return () => io.disconnect()
+  }, [])
 
   useEffect(() => {
     let raf = 0
@@ -155,12 +227,33 @@ export function CreativeReel() {
       if (!el) return
       const r = el.getBoundingClientRect()
       setProg(clamp(-r.top / Math.max(1, el.offsetHeight - window.innerHeight)))
+      setVw(window.innerWidth)
     }
     const on = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(update) }
     update()
     window.addEventListener('scroll', on, { passive: true })
-    return () => { cancelAnimationFrame(raf); window.removeEventListener('scroll', on) }
+    window.addEventListener('resize', on)
+    return () => { cancelAnimationFrame(raf); window.removeEventListener('scroll', on); window.removeEventListener('resize', on) }
   }, [])
+
+  // one full revolution across the pinned scroll, plus a slow idle drift
+  const [drift, setDrift] = useState(0)
+  useEffect(() => {
+    if (reduced) return
+    let raf = 0, last = performance.now()
+    const tick = (t: number) => { setDrift((d) => d + (t - last) * 0.00004); last = t; raf = requestAnimationFrame(tick) }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [reduced])
+
+  const step = (2 * Math.PI) / n
+  const spin = prog * (n - 1) * step + (open ? 0 : drift)
+  const pos = spin / step
+  const activeIdx = ((Math.round(pos) % n) + n) % n
+
+  const narrow = vw < 768
+  const R = narrow ? Math.min(vw * 0.4, 170) : Math.min(vw * 0.3, 420)
+  const cardH = narrow ? 84 : 150
 
   const pickFilter = (f: Filter) => {
     setFilter(f)
@@ -168,47 +261,34 @@ export function CreativeReel() {
     if (el && window.scrollY > el.offsetTop) window.scrollTo({ top: el.offsetTop, behavior: 'smooth' })
   }
 
-  const travel = Math.max(0, dims.trackW - dims.vw)
-  const x = -prog * travel
-  const sectionH = travel + dims.vh
-  const activeIdx = dims.centers.reduce((best, c, i) => (Math.abs(c + x - dims.vw / 2) < Math.abs((dims.centers[best] ?? 0) + x - dims.vw / 2) ? i : best), 0)
-  const step = useCallback((d: number) => setOpen((o) => (o === null ? o : (o + d + list.length) % list.length)), [list.length])
+  const openAt = (i: number) => setOpen({ i, origin: cardEls.current[i]?.getBoundingClientRect() ?? null })
+  const stepOpen = useCallback((d: number) => setOpen((o) => (o ? { i: (o.i + d + n) % n, origin: null } : o)), [n])
 
-  const onMove = (e: React.PointerEvent) => {
-    if (e.pointerType !== 'mouse') return
-    const card = (e.target as Element).closest('[data-work]') as HTMLElement | null
-    setCursor({ x: e.clientX, y: e.clientY, on: !!card, label: card?.dataset.work === 'Video' ? 'Play' : 'View' })
-  }
+  const active = list[activeIdx]
 
   if (reduced) {
     return (
       <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
         <div className="columns-2 gap-4 md:columns-3">
           {creativeWorks.map((w, i) => (
-            <button key={w.driveId} onClick={() => setOpen(i)} className="mb-4 block w-full overflow-hidden rounded-2xl ring-1 ring-mint/10">
+            <button key={w.driveId} onClick={() => setOpen({ i, origin: null })} className="mb-4 block w-full overflow-hidden rounded-2xl ring-1 ring-mint/10">
               <img src={thumb(w.driveId, 700)} alt={w.title} className="w-full" />
             </button>
           ))}
         </div>
-        {open !== null && <Viewer list={creativeWorks} index={open} onClose={() => setOpen(null)} onStep={step} />}
+        {open && <CaseStudy list={creativeWorks} index={open.i} origin={null} onClose={() => setOpen(null)} onStep={(d) => setOpen((o) => o && { i: (o.i + d + creativeWorks.length) % creativeWorks.length, origin: null })} />}
       </section>
     )
   }
 
   return (
-    <section ref={wrap} className="relative" style={{ height: sectionH || '300vh' }} aria-label="Graphics and video portfolio">
-      <div className="sticky top-0 h-[100svh] overflow-hidden" onPointerMove={onMove} onPointerLeave={() => setCursor((c) => ({ ...c, on: false }))}>
-        {/* giant outlined type drifting behind the reel */}
-        <div aria-hidden className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 whitespace-nowrap font-serif text-[22vw] italic leading-none text-transparent [-webkit-text-stroke:1px_rgba(139,229,213,.14)]"
-          style={{ transform: `translate(${-prog * 35}%, -50%)` }}>
-          Canva · CapCut · Figma · Canva · CapCut ·
-        </div>
-
-        {/* header + filters */}
-        <div className="relative z-10 mx-auto flex max-w-6xl flex-wrap items-end justify-between gap-4 px-4 pt-24 sm:px-6">
+    <section ref={wrap} className="relative" style={{ height: `${Math.max(320, n * 26)}vh` }} aria-label="Graphics and video portfolio">
+      <div className="sticky top-0 h-[100svh] overflow-hidden bg-[radial-gradient(ellipse_at_50%_50%,rgba(3,13,13,.2),#020707_70%)]">
+        {/* header */}
+        <div className="relative z-30 mx-auto flex max-w-7xl flex-wrap items-start justify-between gap-4 px-4 pt-24 sm:px-8">
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-[.25em] text-emerald">Selected edits</p>
-            <p className="mt-1 font-serif text-3xl text-white sm:text-4xl">The <span className="accent">reel.</span></p>
+            <p className="font-mono text-[11px] uppercase tracking-[.25em] text-emerald">Selected edits · orbit</p>
+            <p className="mt-1 font-mono text-xs text-muted">Scroll to spin · click any piece to open</p>
           </div>
           <div role="tablist" aria-label="Filter edits" className="glass flex gap-1 !rounded-full p-1">
             {FILTERS.map((f) => {
@@ -223,67 +303,82 @@ export function CreativeReel() {
           </div>
         </div>
 
-        {/* the curved track */}
-        <div className="absolute inset-x-0 bottom-[12vh] top-[30vh] sm:top-[26vh]" style={{ perspective: '1400px' }}>
-          <div ref={track} className="flex h-full w-max items-center gap-6 px-[8vw] will-change-transform sm:gap-10" style={{ transform: `translate3d(${x}px,0,0)`, transformStyle: 'preserve-3d' }}>
+        {/* the light */}
+        <div aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2">
+          <div className="absolute left-1/2 top-1/2 h-[70vmin] w-[70vmin] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(46,229,157,.22),rgba(34,211,238,.06)_55%,transparent)]" />
+          <div className="orbit-rays absolute left-1/2 top-1/2 h-[46vmin] w-[46vmin] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-70 [background:repeating-conic-gradient(from_0deg,rgba(230,255,240,.22)_0deg_.6deg,transparent_.6deg_9deg)] [mask-image:radial-gradient(closest-side,#000_10%,transparent)]" />
+          <div className="absolute left-1/2 top-1/2 h-36 w-36 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(255,255,255,.95),rgba(198,244,50,.35)_40%,transparent)] blur-md" />
+          <div className="orbit-core absolute left-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white shadow-[0_0_40px_14px_rgba(255,255,255,.85),0_0_120px_40px_rgba(46,229,157,.5)]" />
+          <div className="absolute left-1/2 top-1/2 h-px w-[60vmin] -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-transparent via-white/70 to-transparent" />
+        </div>
+
+        {/* the ring */}
+        <div className="absolute inset-0" style={{ perspective: '1400px', perspectiveOrigin: '50% 50%' }}>
+          <div className="absolute left-1/2 top-1/2" style={{ transformStyle: 'preserve-3d' }}>
             {list.map((w, i) => {
-              const d = dims.centers[i] !== undefined ? (dims.centers[i] + x - dims.vw / 2) / dims.vw : 0
-              const ad = Math.min(Math.abs(d), 1.2)
+              const th = FRONT + i * step - spin
+              const cx = R * Math.cos(th), cy = R * Math.sin(th) * 0.78
+              const x = cx * Math.cos(TILT_Y)
+              const z = -cx * Math.sin(TILT_Y)            // left side (cos<0) comes toward the camera
+              const depth = (z / (R * Math.sin(TILT_Y)) + 1) / 2 // 0 = far, 1 = near
+              const isActive = i === activeIdx
+              const wCard = w.ratio === 'wide' ? cardH * 1.6 : cardH * 0.8
+              const hCard = w.ratio === 'wide' ? cardH * 0.9 : cardH
               return (
                 <button
                   key={w.driveId}
-                  ref={(el) => { cards.current[i] = el }}
-                  data-work={w.group}
-                  onClick={() => setOpen(i)}
-                  aria-label={`${w.title} (${w.group}), open`}
-                  className={`group relative shrink-0 overflow-hidden rounded-[22px] bg-dark ring-1 ring-mint/10 transition-[box-shadow] duration-500 hover:ring-lime/60 md:cursor-none ${w.ratio === 'wide' ? 'aspect-video h-[25vh] sm:h-[44vh]' : 'aspect-[4/5] h-[42vh] sm:h-[54vh]'}`}
+                  ref={(el) => { cardEls.current[i] = el }}
+                  onClick={() => openAt(i)}
+                  aria-label={`Open ${w.title}`}
+                  tabIndex={depth > 0.55 ? 0 : -1}
+                  className="group absolute left-0 top-0 overflow-hidden rounded-[14px] bg-dark text-left outline-none"
                   style={{
-                    transform: `translateY(${ad * ad * 50}px) translateZ(${-ad * 160}px) rotateY(${d * -22}deg)`,
-                    filter: `brightness(${1 - ad * 0.35})`,
-                    boxShadow: i === activeIdx ? '0 30px 80px -30px rgba(46,229,157,.55)' : undefined,
+                    width: wCard, height: hCard,
+                    transform: `translate(-50%,-50%) translate3d(${x}px, ${cy}px, ${z}px) rotateY(${-cx * 0.035 - 8}deg) rotateZ(${Math.sin(th) * -6}deg)`,
+                    filter: `brightness(${0.35 + depth * 0.75}) saturate(${0.6 + depth * 0.5})`,
+                    boxShadow: isActive
+                      ? '0 0 0 2px #C6F432, 0 30px 70px -20px rgba(198,244,50,.55)'
+                      : `0 0 0 1.5px rgba(${w.group === 'Campus' ? '46,229,157' : w.group === 'Video' ? '198,244,50' : '34,211,238'},${0.25 + depth * 0.45})`,
+                    zIndex: Math.round(depth * 100),
                   }}
                 >
-                  <img src={thumb(w.driveId)} alt="" draggable={false} loading="lazy"
+                  <img src={near ? thumb(w.driveId, 700) : undefined} alt="" draggable={false}
                     onError={(e) => { e.currentTarget.style.display = 'none' }}
-                    className="h-full w-full scale-[1.14] object-cover transition-transform duration-700 group-hover:scale-[1.2]"
-                    style={{ translate: `${d * -6}% 0` }} />
-                  <span className="absolute inset-0 bg-gradient-to-t from-space/90 via-transparent to-transparent opacity-80 transition group-hover:opacity-100" />
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110 group-focus-visible:scale-110" />
+                  {/* curved-glass sheen */}
+                  <span aria-hidden className="pointer-events-none absolute inset-0 bg-[linear-gradient(100deg,rgba(255,255,255,.22),transparent_35%,transparent_65%,rgba(0,0,0,.35))]" />
                   {w.group === 'Video' && (
-                    <span className="absolute left-1/2 top-1/2 grid h-16 w-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-lime/90 text-space shadow-[0_0_40px] shadow-lime/60 transition group-hover:scale-110">
-                      <Play size={24} className="translate-x-[2px] fill-current" />
+                    <span className="absolute left-1/2 top-1/2 grid h-10 w-10 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-lime text-space shadow-[0_0_24px] shadow-lime/70">
+                      <Play size={16} className="translate-x-[1px] fill-current" />
                     </span>
                   )}
-                  <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 text-left">
-                    <span>
-                      <span className="block font-mono text-[10px] uppercase tracking-widest text-emerald">{w.group} · {w.tool}</span>
-                      <span className="mt-0.5 block font-serif text-xl leading-tight text-white sm:text-2xl">{w.title}</span>
-                    </span>
-                    <span className="font-mono text-[10px] text-muted">{String(i + 1).padStart(2, '0')}</span>
-                  </span>
                 </button>
               )
             })}
           </div>
         </div>
 
-        {/* progress */}
-        <div className="absolute inset-x-0 bottom-6 mx-auto flex max-w-6xl items-center gap-4 px-4 sm:px-6">
-          <span className="font-mono text-xs text-lime">{String(activeIdx + 1).padStart(2, '0')}</span>
-          <span className="relative h-px flex-1 bg-mint/15">
-            <span className="absolute inset-y-0 left-0 bg-gradient-to-r from-lime via-emerald to-cyan" style={{ width: `${prog * 100}%` }} />
-          </span>
-          <span className="font-mono text-xs text-muted">{String(list.length).padStart(2, '0')}</span>
-        </div>
-
-        {/* custom cursor */}
-        <div aria-hidden className="pointer-events-none fixed left-0 top-0 z-50 hidden md:block"
-          style={{ transform: `translate(${cursor.x}px, ${cursor.y}px)` }}>
-          <span className={`-ml-11 -mt-11 grid h-22 w-22 place-items-center rounded-full bg-lime font-mono text-xs font-semibold uppercase tracking-widest text-space transition-[scale,opacity] duration-300 ${cursor.on ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}>
-            {cursor.label}
-          </span>
+        {/* big title of the piece at the front */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 bg-gradient-to-t from-[#020707] via-[#020707]/70 to-transparent px-4 pb-8 pt-20 sm:px-8">
+          <div className="mx-auto flex max-w-7xl items-end justify-between gap-6">
+            <div className="min-w-0">
+              <p className="mb-2 font-mono text-[11px] uppercase tracking-[.25em] text-emerald">
+                <span className="text-lime">{String(activeIdx + 1).padStart(2, '0')}</span> / {String(n).padStart(2, '0')} · {active.group} · {active.tool}
+              </p>
+              <div className="overflow-hidden">
+                <h3 key={active.driveId} className="word-rise !block truncate font-display text-[11vw] font-bold leading-[.95] tracking-[-.03em] text-white sm:text-7xl md:text-8xl">
+                  {active.title.replace(/^Sudsies · /, '').replace(/ · .*$/, '')}
+                </h3>
+              </div>
+              <p className="mt-2 text-sm text-muted">{active.title.startsWith('Sudsies') ? 'Sudsies social series' : metaFor(active).format}</p>
+            </div>
+            <button onClick={() => openAt(activeIdx)} className="pointer-events-auto hidden shrink-0 items-center gap-2 rounded-full border border-lime/50 px-5 py-3 text-sm text-lime transition hover:bg-lime hover:text-space sm:inline-flex">
+              Open case <ArrowRight size={16} />
+            </button>
+          </div>
         </div>
       </div>
-      {open !== null && <Viewer list={list} index={open} onClose={() => setOpen(null)} onStep={step} />}
+      {open && <CaseStudy key={open.origin ? `o${open.i}` : 'nav'} list={list} index={open.i} origin={open.origin} onClose={() => setOpen(null)} onStep={stepOpen} />}
     </section>
   )
 }

@@ -182,3 +182,10 @@ body {
 @media (prefers-reduced-motion: reduce) { .word-rise { animation: none; } }
 /* solid serif accent for animated swaps (gradient text doesn't paint inside animated layers) */
 .accent-solid { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--color-lime); text-shadow: 0 0 28px rgba(198, 244, 50, .35); padding-right: .08em; }
+
+/* ── Creative orbit: light rays + pulsing core ── */
+@keyframes orbit-rays { to { rotate: 360deg; } }
+@keyframes orbit-core { 0%, 100% { scale: 1; } 50% { scale: 1.35; } }
+.orbit-rays { animation: orbit-rays 60s linear infinite; }
+.orbit-core { animation: orbit-core 3.2s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .orbit-rays, .orbit-core { animation: none; } }
