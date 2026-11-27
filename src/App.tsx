@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react'
 import {
   ArrowRight, Award, BarChart3, Brain, Briefcase, Check, Code2, Compass,
   Database, FileText, GraduationCap, Layout, Mail, MapPin, Menu, MessageCircle, Palette, Server,
@@ -104,7 +104,7 @@ function Section({ id, eyebrow, title, intro, children }: { id: string; eyebrow:
 
 function Logo() {
   return (
-    <span className="grid h-9 w-9 place-items-center rounded-xl border border-aqua/50 bg-dark font-display text-sm font-bold text-aqua">
+    <span className="logo-breathe grid h-9 w-9 place-items-center rounded-xl border border-aqua/50 bg-dark font-display text-sm font-bold text-aqua">
       <span>J<span className="text-mint">M</span></span>
     </span>
   )
@@ -113,41 +113,101 @@ function Logo() {
 function Navbar() {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [active, setActive] = useState<string | null>(null)
+  const [progress, setProgress] = useState(0)
+  const [pill, setPill] = useState({ left: 0, width: 0, show: false })
+  const listRef = useRef<HTMLUListElement>(null)
+  const linkRefs = useRef<Record<string, HTMLAnchorElement | null>>({})
+
+  // scroll spy + page progress
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20)
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    let raf = 0
+    const update = () => {
+      setScrolled(window.scrollY > 20)
+      const max = document.documentElement.scrollHeight - window.innerHeight
+      setProgress(max > 0 ? window.scrollY / max : 0)
+      const probe = window.innerHeight * 0.35
+      let current: string | null = null
+      for (const n of NAV) {
+        const el = document.getElementById(n.id)
+        if (!el) continue
+        const r = el.getBoundingClientRect()
+        if (r.top <= probe && r.bottom > probe) current = n.id
+      }
+      setActive(current)
+    }
+    const on = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(update) }
+    update()
+    window.addEventListener('scroll', on, { passive: true })
+    window.addEventListener('resize', on)
+    return () => { cancelAnimationFrame(raf); window.removeEventListener('scroll', on); window.removeEventListener('resize', on) }
   }, [])
+
+  // slide the glowing pill under the active link
+  useEffect(() => {
+    const place = () => {
+      const a = active ? linkRefs.current[active] : null
+      const ul = listRef.current
+      if (!a || !ul) return setPill((p) => ({ ...p, show: false }))
+      const ar = a.getBoundingClientRect(), ur = ul.getBoundingClientRect()
+      setPill({ left: ar.left - ur.left, width: ar.width, show: true })
+    }
+    place()
+    window.addEventListener('resize', place)
+    return () => window.removeEventListener('resize', place)
+  }, [active, scrolled])
 
   return (
     <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${scrolled ? 'py-2' : 'py-4'}`}>
-      <nav className={`mx-auto flex max-w-6xl items-center justify-between px-4 sm:px-6 ${scrolled ? 'glass !rounded-2xl mx-3 sm:mx-auto py-2.5 shadow-lg shadow-black/30' : ''}`}>
-        <a href="#top" className="flex items-center gap-2.5" aria-label="Home">
+      <nav className={`relative mx-auto flex max-w-6xl items-center justify-between px-4 sm:px-6 ${scrolled ? 'glass !rounded-2xl mx-3 sm:mx-auto py-2.5 shadow-[0_10px_40px_-12px_rgba(0,0,0,.6),0_0_0_1px_rgba(168,232,244,.06)]' : ''}`}>
+        <a href="#top" className="group flex items-center gap-2.5" aria-label="Home">
           <Logo />
-          <span className="hidden font-display font-semibold text-white sm:inline">Jethro M.</span>
+          <span className="hidden font-display font-semibold text-white transition group-hover:[text-shadow:0_0_14px_rgba(168,232,244,.7)] sm:inline">Jethro M.</span>
         </a>
-        <ul className="hidden items-center gap-0.5 xl:flex">
-          {NAV.map((n) => (
-            <li key={n.id}>
-              <a href={`#${n.id}`} className="rounded-lg px-3 py-2 text-sm text-muted transition hover:text-mint">{n.label}</a>
-            </li>
-          ))}
+
+        <ul ref={listRef} className="relative hidden items-center gap-0.5 xl:flex">
+          {/* sliding glow pill under the section you're in */}
+          <span aria-hidden className="pointer-events-none absolute top-1/2 h-9 -translate-y-1/2 rounded-full border border-lime/40 bg-gradient-to-b from-lime/15 to-aqua/5 shadow-[0_0_22px_-2px_rgba(214,247,255,.45),inset_0_1px_0_rgba(255,255,255,.12)] transition-all duration-500 [transition-timing-function:cubic-bezier(.2,.8,.2,1)]"
+            style={{ left: pill.left, width: pill.width, opacity: pill.show ? 1 : 0 }} />
+          {NAV.map((n) => {
+            const on = active === n.id
+            return (
+              <li key={n.id} className="relative">
+                <a ref={(el) => { linkRefs.current[n.id] = el }} href={`#${n.id}`} aria-current={on ? 'true' : undefined}
+                  className={`relative block rounded-full px-3 py-2 text-sm transition duration-300 ${on ? 'text-white [text-shadow:0_0_12px_rgba(214,247,255,.8)]' : 'text-muted hover:text-white hover:[text-shadow:0_0_12px_rgba(168,232,244,.75)]'}`}>
+                  {n.label}
+                </a>
+              </li>
+            )
+          })}
         </ul>
+
         <div className="flex items-center gap-2">
-          <a href="#contact" className="hidden items-center gap-1.5 rounded-full bg-aqua px-4 py-2 text-sm font-medium text-deep transition hover:bg-mint sm:inline-flex">
+          <a href="#contact" className="btn-shine relative hidden items-center gap-1.5 overflow-hidden rounded-full bg-aqua px-4 py-2 text-sm font-medium text-deep shadow-[0_0_24px_-6px_rgba(60,196,220,.8)] transition hover:bg-mint hover:shadow-[0_0_32px_-4px_rgba(168,232,244,.95)] sm:inline-flex">
             Hire me <ArrowRight size={15} />
           </a>
-          <button onClick={() => setOpen(!open)} className="grid h-10 w-10 place-items-center rounded-lg text-mint xl:hidden" aria-label="Toggle menu" aria-expanded={open}>
+          <button onClick={() => setOpen(!open)} className="grid h-10 w-10 place-items-center rounded-lg text-mint transition hover:[filter:drop-shadow(0_0_8px_rgba(168,232,244,.8))] xl:hidden" aria-label="Toggle menu" aria-expanded={open}>
             {open ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
+
+        {/* page scroll progress, glowing along the bottom edge */}
+        {scrolled && (
+          <span aria-hidden className="pointer-events-none absolute inset-x-4 -bottom-px h-px overflow-hidden rounded-full">
+            <span className="block h-full origin-left bg-gradient-to-r from-cyan via-aqua to-lime shadow-[0_0_10px_1px_rgba(168,232,244,.8)]"
+              style={{ transform: `scaleX(${progress})` }} />
+          </span>
+        )}
       </nav>
       {open && (
-        <ul className="glass mx-3 mt-2 flex flex-col p-2 xl:hidden">
+        <ul className="glass panel-in mx-3 mt-2 flex flex-col p-2 xl:hidden">
           {[...NAV, { id: 'contact', label: 'Hire me' }].map((n) => (
             <li key={n.id}>
-              <a href={`#${n.id}`} onClick={() => setOpen(false)} className="block rounded-lg px-4 py-3 text-muted hover:bg-aqua/10 hover:text-mint">{n.label}</a>
+              <a href={`#${n.id}`} onClick={() => setOpen(false)}
+                className={`flex items-center gap-3 rounded-lg px-4 py-3 transition ${active === n.id ? 'bg-aqua/10 text-white [text-shadow:0_0_12px_rgba(214,247,255,.7)]' : 'text-muted hover:bg-aqua/10 hover:text-mint'}`}>
+                <span className={`h-1.5 w-1.5 rounded-full transition ${active === n.id ? 'bg-lime shadow-[0_0_8px] shadow-lime' : 'bg-mint/20'}`} />
+                {n.label}
+              </a>
             </li>
           ))}
         </ul>
