@@ -10,7 +10,7 @@ export const profile = {
   location: 'San Pablo City, Laguna, Philippines',
   // TODO: replace with your real links
   email: 'your.email@example.com',
-  github: 'https://github.com/your-username',
+  github: 'https://github.com/Jetsyyy',
   linkedin: 'https://www.linkedin.com/in/your-profile',
   resume: '#', // e.g. '/resume.pdf' after adding it to /public
 }
