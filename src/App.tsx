@@ -12,9 +12,9 @@ import {
 const NAV = [
   { id: 'about', label: 'About' },
   { id: 'qualifications', label: 'Qualifications' },
-  { id: 'stack', label: 'Stack' },
-  { id: 'projects', label: 'Projects' },
+  { id: 'stack', label: 'Skills' },
   { id: 'experience', label: 'Experience' },
+  { id: 'projects', label: 'Projects' },
   { id: 'leadership', label: 'Leadership' },
   { id: 'contact', label: 'Contact' },
 ]
@@ -220,13 +220,11 @@ function About() {
             {about.focus.map((f) => <span key={f} className="chip">{f}</span>)}
           </div>
         </div>
-        <div className="grid gap-6">
+        <div className="grid content-start gap-6">
           <div className="reveal glass p-7">
-            <div className="mb-4 flex items-center gap-3 text-aqua"><GraduationCap size={22} /><span className="eyebrow !text-aqua">Education</span></div>
-            <h3 className="font-display text-xl font-semibold text-white">{education.degree}</h3>
-            <p className="text-mint">{education.major}</p>
-            <p className="mt-2 text-sm text-muted">{education.school}</p>
-            <p className="mt-1 font-mono text-xs text-muted">{education.years}</p>
+            <p className="eyebrow mb-3">Currently</p>
+            <p className="font-display text-xl font-semibold text-white">Full-Stack Developer · AI Integration</p>
+            <p className="mt-2 flex items-center gap-2 text-sm text-muted"><MapPin size={15} className="text-aqua" /> {profile.location}</p>
           </div>
           <div className="reveal grid grid-cols-3 gap-3">
             {about.stats.map((s) => (
@@ -245,7 +243,20 @@ function About() {
 function Qualifications() {
   const icons = [<Code2 />, <Brain />, <BarChart3 />, <Layout />, <FileText />, <Users />]
   return (
-    <Section id="qualifications" eyebrow="02 · Qualifications" title="What I bring to a team">
+    <Section id="qualifications" eyebrow="02 · Qualifications & education" title="What I bring to a team">
+      <div className="reveal glass relative mb-5 grid gap-6 overflow-hidden p-7 sm:p-8 md:grid-cols-[auto_1fr_auto] md:items-center">
+        <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-aqua/15 blur-3xl" />
+        <div className="grid h-14 w-14 place-items-center rounded-2xl bg-aqua/10 text-aqua"><GraduationCap size={28} /></div>
+        <div>
+          <h3 className="font-display text-2xl font-semibold text-white">{education.degree}</h3>
+          <p className="text-mint">{education.major}</p>
+          <p className="mt-1 text-sm text-muted">{education.school}</p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {education.honors.map((h) => <span key={h} className="chip">{h}</span>)}
+          </div>
+        </div>
+        <span className="font-mono text-sm text-aqua md:self-start">{education.years}</span>
+      </div>
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {qualifications.map((q, n) => (
           <div key={q.title} className="reveal glass glass-hover p-6" style={{ transitionDelay: `${n * 60}ms` }}>
@@ -261,7 +272,7 @@ function Qualifications() {
 
 function Stack() {
   return (
-    <Section id="stack" eyebrow="03 · Tech stack" title="Tools I build with">
+    <Section id="stack" eyebrow="03 · Technical skills" title="Tools I build with">
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {techStack.map((g) => (
           <div key={g.group} className="reveal glass glass-hover p-6">
@@ -283,7 +294,7 @@ function Stack() {
 
 function Projects() {
   return (
-    <Section id="projects" eyebrow="04 · Featured projects" title="Systems I've built">
+    <Section id="projects" eyebrow="05 · Featured projects" title="Systems I've built">
       <div className="grid gap-5 md:grid-cols-2">
         {projects.map((p) => (
           <article key={p.title} className={`reveal glass glass-hover relative flex flex-col overflow-hidden p-7 ${p.featured ? 'md:min-h-[300px]' : ''}`}>
@@ -308,7 +319,7 @@ function Projects() {
 
 function Experience() {
   return (
-    <Section id="experience" eyebrow="05 · Experience" title="Where I've worked">
+    <Section id="experience" eyebrow="04 · Professional experience" title="Where I've worked">
       <ol className="relative ml-3 border-l border-aqua/25">
         {experience.map((e) => (
           <li key={e.role + e.org} className="reveal relative mb-8 pl-8 last:mb-0">
@@ -319,6 +330,10 @@ function Experience() {
                 <span className="font-mono text-xs text-aqua">{e.period}</span>
               </div>
               <p className="mt-1 text-mint">{e.org}</p>
+              <p className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-xs text-muted">
+                <span className="inline-flex items-center gap-1.5"><Briefcase size={13} className="text-aqua" />{e.type}</span>
+                {e.location && <span className="inline-flex items-center gap-1.5"><MapPin size={13} className="text-aqua" />{e.location}</span>}
+              </p>
               <ul className="mt-4 space-y-2">
                 {e.points.map((pt) => (
                   <li key={pt} className="flex gap-3 text-sm leading-relaxed text-muted">
@@ -326,6 +341,11 @@ function Experience() {
                   </li>
                 ))}
               </ul>
+              {e.tech && (
+                <div className="mt-5 flex flex-wrap gap-2 border-t border-mint/10 pt-4">
+                  {e.tech.map((t) => <span key={t} className="chip">{t}</span>)}
+                </div>
+              )}
             </div>
           </li>
         ))}
@@ -406,8 +426,8 @@ export default function App() {
         <About />
         <Qualifications />
         <Stack />
-        <Projects />
         <Experience />
+        <Projects />
         <Leadership />
         <Contact />
       </main>

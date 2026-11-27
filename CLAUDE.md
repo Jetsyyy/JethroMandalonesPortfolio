@@ -8,4 +8,7 @@ React + Vite + TypeScript + Tailwind v4. Content: `src/data.ts`. Brand tokens: `
 - **Never use purple** or the typical purple-gradient dev-portfolio look.
 
 ## Section order
-Hero → About → Qualifications → Tech Stack → Projects → Experience → Leadership & Achievements → Contact
+Hero (Full-Stack Developer / AI Integration) → About → Qualifications & Education → Technical Skills → Professional Experience → Featured Projects → Leadership & Achievements → Contact
+
+## Experience accuracy
+Keep the OJT (Alexa's Engineering Services), freelance work, and the Gallagher's Resource short-term engagement as **separate** entries. Don't present them as ongoing or full-time employment.
