@@ -14,6 +14,7 @@ import LightStreaks from './fx/LightStreaks'
 import FlowDiagram from './fx/FlowDiagram'
 import useSpotlight from './fx/useSpotlight'
 import Hero from './Hero'
+import Certificates from './Certificates'
 
 const NAV = [
   { id: 'services', label: 'Services' },
@@ -23,6 +24,7 @@ const NAV = [
   { id: 'demos', label: 'Demos' },
   { id: 'projects', label: 'Work' },
   { id: 'leadership', label: 'Leadership' },
+  { id: 'certificates', label: 'Certs' },
 ]
 
 const STACK_ICONS: Record<string, ReactNode> = {
@@ -641,6 +643,7 @@ export default function App() {
         <Demos />
         <Projects />
         <Leadership />
+        <Certificates />
         <BuildBand />
         <Contact />
       </main>

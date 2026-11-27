@@ -124,6 +124,56 @@ export const services: Service[] = [
   },
 ]
 
+// Certificates hosted in Google Drive ("Seminar's Attended/ Certificate" folder, anyone-with-link).
+export type Certificate = {
+  driveId: string
+  title: string
+  issuer: string
+  kind: string
+  date: string
+  detail: string
+  skills: string[]
+}
+
+export const certificates: Certificate[] = [
+  {
+    driveId: '12DUDFw41LXQe9Z1yXzf3flqbAQNtFPBM',
+    title: 'Artificial Intelligence in Data Analytics',
+    issuer: 'DICT · Cybersecurity Bureau',
+    kind: 'Certificate of Attendance · Webinar',
+    date: 'Jan 26, 2025',
+    detail: 'National webinar by the Department of Information and Communications Technology on applying AI to data analytics.',
+    skills: ['AI', 'Data Analytics'],
+  },
+  {
+    driveId: '174w3CBr8O8VBQ3h8YAMdGe2JISmfB1IL',
+    title: 'Ethical Hacking and Data Security',
+    issuer: 'PLSP · College of Computer Studies and Technology',
+    kind: 'Certificate of Participation · Seminar',
+    date: 'Apr 4, 2025',
+    detail: 'Information Systems Club seminar on cybersecurity principles, ethical hacking practices and digital safety.',
+    skills: ['Cybersecurity', 'Ethical Hacking'],
+  },
+  {
+    driveId: '1RJuOFrHVWZ7GZ_xskx4QHsHOssOVnDYJ',
+    title: 'Walang Iwanan sa Digital Bayanihan',
+    issuer: 'PLSP · National ICT Month Celebration',
+    kind: 'Certificate of Participation · Event',
+    date: 'Jun 13–14, 2025',
+    detail: 'Two-day National ICT Month celebration at PLSP CCST on digital inclusion and community tech.',
+    skills: ['ICT', 'Digital Inclusion'],
+  },
+  {
+    driveId: '1rnD2oEKrd8ZbkV6vTcy80RB4yPKTjMcR',
+    title: 'Managing a Business Venture',
+    issuer: 'Cisco Networking Academy',
+    kind: 'Certificate of Course Completion',
+    date: 'Dec 6, 2025',
+    detail: 'Verified course credential covering venture financing, operations, business structures and risk management.',
+    skills: ['Entrepreneurship', 'Business'],
+  },
+]
+
 export const about = {
   paragraphs: [
     "I'm an Information Systems graduate majoring in Business Analytics at Pamantasan ng Lungsod ng San Pablo. I work at the point where software engineering meets business needs: I understand how a system is built and why an organization needs it.",
