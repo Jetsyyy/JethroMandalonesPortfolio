@@ -5,7 +5,7 @@ import {
   Smartphone, Users, Wrench, X,
 } from 'lucide-react'
 import {
-  about, education, experience, leadership, leadershipSummary, pitch, profile,
+  education, experience, leadership, leadershipSummary, pitch, profile,
   projects, qualifications, services, techStack, type Project,
 } from './data'
 import DemoDeck from './DemoDeck'
@@ -14,6 +14,7 @@ import LightStreaks from './fx/LightStreaks'
 import FlowDiagram from './fx/FlowDiagram'
 import useSpotlight from './fx/useSpotlight'
 import Hero from './Hero'
+import About from './About'
 import Certificates from './Certificates'
 import { CreativeIntro, CreativeReel } from './Creative'
 import AIShowcase from './AIShowcase'
@@ -194,36 +195,6 @@ function Services() {
             </ul>
           </article>
         ))}
-      </div>
-    </Section>
-  )
-}
-
-function About() {
-  return (
-    <Section id="about" eyebrow="About me" title={<>Where code meets <span className="accent">business.</span></>}>
-      <div className="grid gap-6 md:grid-cols-[1.4fr_1fr]">
-        <div className="reveal glass p-7 sm:p-9">
-          {about.paragraphs.map((p) => <p key={p} className="mb-4 leading-relaxed text-muted last:mb-0">{p}</p>)}
-          <div className="mt-6 flex flex-wrap gap-2">
-            {about.focus.map((f) => <span key={f} className="chip">{f}</span>)}
-          </div>
-        </div>
-        <div className="grid content-start gap-6">
-          <div className="reveal glass p-7">
-            <p className="eyebrow mb-3">Currently</p>
-            <p className="font-display text-xl font-semibold text-white">Full-Stack Developer · AI Integration</p>
-            <p className="mt-2 flex items-center gap-2 text-sm text-muted"><MapPin size={15} className="text-aqua" /> {profile.location}</p>
-          </div>
-          <div className="reveal grid grid-cols-3 gap-3">
-            {about.stats.map((s) => (
-              <div key={s.label} className="glass p-4 text-center">
-                <div className="font-display text-2xl font-bold text-aqua sm:text-3xl">{s.value}</div>
-                <div className="mt-1 text-xs text-muted">{s.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     </Section>
   )
